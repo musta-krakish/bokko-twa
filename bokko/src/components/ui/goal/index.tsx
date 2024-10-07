@@ -88,7 +88,6 @@ const Goals: React.FC = () => {
                     </ul>
                     {selectedGoal && (
                         <div className="mt-4">
-                            <h3 className="text-lg font-semibold mb-2">Задачи для цели: {selectedGoal.title}</h3>
                             <ul className="space-y-2">
                                 {tasks.length > 0 ? (
                                     tasks.map((task) => (

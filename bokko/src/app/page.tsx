@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import RegisterForm from "@/components/register-form";
 import Goals from "@/components/ui/goal";
@@ -40,7 +40,7 @@ export default function Home() {
     }, [initData]);
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 py-6 space-y-6">
             {!user ? (
                 <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                     <RegisterForm />
@@ -51,7 +51,9 @@ export default function Home() {
                     <p className="text-gray-700">Должность: {user.post}</p>
                 </div>
             )}
-            <Goals/>
+            <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+                <Goals />
+            </div>
         </div>
     );
 }
