@@ -146,7 +146,7 @@ export const ApiService = {
     },
     async confurmTask(task_id: string, auth: string) {
         try {
-            return await instance.put(`/task/confurm/?task_id=${task_id}`,
+            return await instance.put(`/task/confurm/?task_id=${task_id}`, {},
                 {
                     headers: {
                         Authorization: `twa ${auth}`
