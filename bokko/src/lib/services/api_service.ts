@@ -109,7 +109,7 @@ export const ApiService = {
             throw err
         }
     },
-    async getTasks( auth: string, goal_id?: string | null, date?:Date | null) {
+    async getTasks( auth: string, goal_id?: string | null, date?:string | null) {
         try {
             let url = `/task/`
             if (date)

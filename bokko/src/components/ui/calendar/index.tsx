@@ -20,7 +20,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
     const generateDays = () => {
         const days = [];
         for (let i = 0; i < 30; i++) {
-            days.push(dayjs(curDate).add(i, 'day').toDate());
+            days.push(dayjs(curDate).add(i, "day").toDate());
         }
         return days;
     };
@@ -46,7 +46,8 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
         }).toString();
 
         const fetchData = async () => {
-            const data = await ApiService.getTasks(initDataStr, null, date);
+            const isoDate = dayjs(date).toISOString(); // Преобразуем дату в формат ISO 8601
+            const data = await ApiService.getTasks(initDataStr, null, isoDate);
             setTasks(data);
         };
 
@@ -72,16 +73,16 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
         }).toString();
 
         await ApiService.confurmTask(task_id, initDataStr);
-        setTasks((prevTasks) => prevTasks.filter(task => task._id !== task_id));
-    }
+        setTasks((prevTasks) => prevTasks.filter((task) => task._id !== task_id));
+    };
 
     const handleTaskClick = () => {
-        router.push("/task")
-    }
+        router.push("/task");
+    };
 
     const handleGantClick = () => {
-        router.push("/gant")
-    }
+        router.push("/gant");
+    };
 
     return (
         <div className="p-4 text-black bg-gray-100 max-w-md mx-auto relative">
@@ -92,18 +93,18 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
                     <div
                         key={index}
                         className={`p-2 cursor-pointer text-center rounded-md ${
-                            dayjs(day).isSame(date, 'day') ? 'bg-gray-300' : 'bg-gray-100'
+                            dayjs(day).isSame(date, "day") ? "bg-gray-300" : "bg-gray-100"
                         }`}
                         onClick={() => setDate(day)}
                     >
-                        <div>{dayjs(day).format('D')}</div>
-                        <div>{dayjs(day).format('dd').toUpperCase()}</div>
+                        <div>{dayjs(day).format("D")}</div>
+                        <div>{dayjs(day).format("dd").toUpperCase()}</div>
                     </div>
                 ))}
             </div>
 
             <div className="mt-4">
-                <h3 className="text-md font-bold mb-2">Задачи на {dayjs(date).format('D MMMM YYYY')}:</h3>
+                <h3 className="text-md font-bold mb-2">Задачи на {dayjs(date).format("D MMMM YYYY")}:</h3>
                 {tasks.length === 0 ? (
                     <div className="text-center text-gray-500">
                         У вас нет задач на день<br />Можно отдыхать!
@@ -111,11 +112,14 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
                 ) : (
                     <ul className="space-y-2">
                         {tasks.map((task) => (
-                            <li key={task._id} className="bg-gray-100 p-2 rounded-md shadow-sm flex items-center justify-between">
+                            <li
+                                key={task._id}
+                                className="bg-gray-100 p-2 rounded-md shadow-sm flex items-center justify-between"
+                            >
                                 <div>
                                     <p className="font-semibold">{task.title}</p>
                                     <p className="text-gray-600">{task.description}</p>
-                                    <p className="text-xs text-gray-500">Срок: {dayjs(task.deadline).format('D MMM YYYY')}</p>
+                                    <p className="text-xs text-gray-500">Срок: {dayjs(task.deadline).format("D MMM YYYY")}</p>
                                 </div>
                                 <input
                                     type="checkbox"
@@ -129,8 +133,12 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
             </div>
 
             <div className="fixed bottom-4 right-4 space-y-2">
-                <button onClick={handleGantClick} className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">Диаграмма Ганта</button>
-                <button onClick={handleTaskClick} className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">+ Добавить задачу</button>
+                <button onClick={handleGantClick} className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">
+                    Диаграмма Ганта
+                </button>
+                <button onClick={handleTaskClick} className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">
+                    + Добавить задачу
+                </button>
             </div>
         </div>
     );
