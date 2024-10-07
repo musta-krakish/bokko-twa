@@ -57,12 +57,25 @@ export default function Gantt() {
             ];
 
             tasks.forEach((task) => {
+                // Use default dates if the fields are not defined
                 const startDate = task.create_date ? new Date(task.create_date) : new Date();
                 const endDate = task.end_date ? new Date(task.end_date) : new Date(task.deadline);
+                
+                // Log if any date is invalid for debugging purposes
+                if (!task.create_date) {
+                    console.warn("Task has undefined create_date:", task);
+                }
+                if (!task.end_date) {
+                    console.warn("Task has undefined end_date:", task);
+                }
+                if (!task.deadline) {
+                    console.warn("Task has undefined deadline:", task);
+                }
 
+                // Add task data to the formatted data
                 formattedData.push([
                     task._id || "",
-                    task.title,
+                    task.title || "",
                     task.goal_id || "",
                     startDate,
                     endDate,
