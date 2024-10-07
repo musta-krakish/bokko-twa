@@ -5,10 +5,12 @@ import Goals from "@/components/ui/goal";
 import { ApiService } from "@/lib/services/api_service";
 import { User } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
     const initData = useInitData(true);
+    const router = useRouter();
     const [user, setUser] = useState<User | null>(null); 
 
     useEffect(() => {
@@ -29,8 +31,6 @@ export default function Home() {
             })
         }).toString();
 
-        console.log("initDataStr:", initDataStr);
-
         const fetchMe = async () => {
             const user = await ApiService.me(initDataStr);
             setUser(user);
@@ -38,6 +38,10 @@ export default function Home() {
 
         fetchMe();
     }, [initData]);
+
+    const handleGoalClick = () => {
+        router.push("/goal");
+    }
 
     return (
         <div className="min-h-screen flex flex-col text-black items-center justify-start bg-gray-100 py-6 space-y-6">
@@ -47,12 +51,13 @@ export default function Home() {
                 </div>
             ) : (
                 <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-                    <h1 className="text-xl font-bold mb-4">Добро пожаловать, {user.first_name} {user.last_name}!</h1>
+                    <h1 className="text-xl font-bold mb-4">{user.first_name} {user.last_name}!</h1>
                     <p className="text-gray-700">Должность: {user.post}</p>
                 </div>
             )}
             <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                 <Goals />
+                <button onClick={handleGoalClick} className="bg-gray-500 rounded-3xl text-black">+ Добавить цель</button>
             </div>
         </div>
     );
