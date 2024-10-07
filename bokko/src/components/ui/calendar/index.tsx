@@ -124,6 +124,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
                                 <input
                                     type="checkbox"
                                     className="ml-4"
+                                    checked={task.complite}
                                     onChange={() => handleConfirmTask(task?._id || "")}
                                 />
                             </li>
