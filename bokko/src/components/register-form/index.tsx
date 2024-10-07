@@ -2,7 +2,6 @@
 
 import { ApiService } from "@/lib/services/api_service";
 import { User } from "@/lib/types";
-import createInitDataStr from "@/lib/utils";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
 
@@ -31,7 +30,23 @@ const RegisterForm: React.FC = () => {
             tg_id: initData.user?.id,
         };
 
-        await ApiService.reg(user, createInitDataStr(initData));
+        const initDataStr = new URLSearchParams({
+            query_id: initData.queryId as string,
+            auth_date: (initData.authDate.getTime() / 1000).toString(),
+            hash: initData.hash,
+            user: JSON.stringify({
+                id: initData.user?.id,
+                first_name: initData.user?.firstName,
+                last_name: initData.user?.lastName,
+                username: initData.user?.username,
+                language_code: initData.user?.languageCode,
+                is_premium: initData.user?.isPremium,
+                allows_write_to_pm: initData.user?.allowsWriteToPm,
+            })
+        }).toString();
+
+
+        await ApiService.reg(user, initDataStr);
     };
 
     return (
