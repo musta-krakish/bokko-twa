@@ -5,6 +5,7 @@ import type { Task } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 
 interface CalendarProps {
     curDate: Date;
@@ -12,6 +13,7 @@ interface CalendarProps {
 
 const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
     const initData = useInitData(true);
+    const router = useRouter();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [date, setDate] = useState<Date>(curDate);
 
@@ -73,6 +75,14 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
         setTasks((prevTasks) => prevTasks.filter(task => task._id !== task_id));
     }
 
+    const handleTaskClick = () => {
+        router.push("/task")
+    }
+
+    const handleGantClick = () => {
+        router.push("/gant")
+    }
+
     return (
         <div className="p-4 text-black bg-gray-100 max-w-md mx-auto relative">
             <h2 className="text-lg font-semibold mb-4">Мой календарь</h2>
@@ -119,8 +129,8 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
             </div>
 
             <div className="fixed bottom-4 right-4 space-y-2">
-                <button className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">Диаграмма Ганта</button>
-                <button className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">+ Добавить задачу</button>
+                <button onClick={handleGantClick} className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">Диаграмма Ганта</button>
+                <button onClick={handleTaskClick} className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">+ Добавить задачу</button>
             </div>
         </div>
     );
