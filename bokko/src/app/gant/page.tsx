@@ -1,16 +1,16 @@
-"use client";
+"use client"; // Ensure this component is client-side rendered
 
 import { ApiService } from "@/lib/services/api_service";
 import type { Task } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
-import { Gantt, Task as GanttTask, ViewMode } from "gantt-task-react";
-import "gantt-task-react/dist/index.css";
+import { Chart } from "react-google-charts";
 
-const GanttChartComponent: React.FC = () => {
+
+export default function Gant(){
     const initData = useInitData(true);
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [ganttTasks, setGanttTasks] = useState<GanttTask[]>([]);
+    const [chartData, setChartData] = useState<any[]>([]);
 
     useEffect(() => {
         if (!initData) return;
@@ -31,8 +31,12 @@ const GanttChartComponent: React.FC = () => {
         }).toString();
 
         const fetchData = async () => {
-            const data = await ApiService.getTasks(initDataStr);
-            setTasks(data);
+            try {
+                const data = await ApiService.getTasks(initDataStr);
+                setTasks(data);
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+            }
         };
 
         fetchData();
@@ -40,31 +44,61 @@ const GanttChartComponent: React.FC = () => {
 
     useEffect(() => {
         if (tasks.length > 0) {
-            const formattedTasks: GanttTask[] = tasks.map((task) => ({
-                id: task._id || "",
-                name: task.title,
-                start: new Date(task.create_date || new Date()),
-                end: new Date(task.end_date || task.deadline),
-                type: "task",
-                progress: task.complite ? 100 : 0,
-                isDisabled: task.complite,
-                project: task.goal_id || undefined,
-            }));
+            const formattedData = [
+                [
+                    "Task ID",
+                    "Task Name",
+                    "Resource",
+                    "Start Date",
+                    "End Date",
+                    "Duration",
+                    "Percent Complete",
+                    "Dependencies",
+                ],
+            ];
 
-            setGanttTasks(formattedTasks);
+            tasks.forEach((task) => {
+                const startDate = task.create_date ? new Date(task.create_date) : new Date();
+                const endDate = task.end_date ? new Date(task.end_date) : new Date(task.deadline);
+
+                formattedData.push([
+                    task._id || "",
+                    task.title,
+                    task.goal_id || "",
+                    startDate.toString(),
+                    endDate.toDateString(),
+                    "fd",
+                    task.complite ? "100" : "0",
+                    "te"
+                ]);
+            });
+
+            setChartData(formattedData);
         }
     }, [tasks]);
+
+    const chartOptions = {
+        height: 400,
+        gantt: {
+            trackHeight: 30,
+        },
+    };
 
     return (
         <div className="p-4 text-black bg-gray-100 max-w-md mx-auto">
             <h2 className="text-lg font-semibold mb-4">Диаграмма Ганта</h2>
-            <Gantt
-                tasks={ganttTasks}
-                viewMode={ViewMode.Day}
-                locale="ru" // This sets the locale to Russian
-            />
+            {chartData.length > 1 ? (
+                <Chart
+                    chartType="Gantt"
+                    data={chartData}
+                    options={chartOptions}
+                    width="100%"
+                    height="400px"
+                    loader={<div>Загрузка диаграммы Ганта...</div>}
+                />
+            ) : (
+                <div>Нет задач для отображения</div>
+            )}
         </div>
     );
-};
-
-export default GanttChartComponent;
+}
