@@ -11,7 +11,7 @@ interface CalendarProps {
 }
 
 const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
-    const initData = useInitData();
+    const initData = useInitData(true);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [date, setDate] = useState<Date>(curDate);
 
