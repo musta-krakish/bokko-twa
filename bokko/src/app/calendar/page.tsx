@@ -1,9 +1,13 @@
 "use client"
 
+import CalendarComponent from "@/components/ui/calendar"
+
 export default function Calendar() {
+    const curDate = new Date();
+
     return (
-        <div>
-            skuf
-        </div>
+        <CalendarComponent
+            curDate={curDate}
+        />
     )
 }

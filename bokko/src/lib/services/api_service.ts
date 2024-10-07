@@ -110,13 +110,13 @@ export const ApiService = {
             throw err
         }
     },
-    async getTasks(goal_id: string, auth: string, date?:Date) {
+    async getTasks( auth: string, goal_id?: string | null, date?:Date | null) {
         try {
-            let url
+            let url = `/task/`
             if (date)
-                url = `/task/?goal_id=${goal_id}&date=${date}`
-            else 
-                url = `/task/?goal_id=${goal_id}`
+                url += `?date=${date}`
+            if (goal_id)
+                url = `?goal_id=${goal_id}`
             return await instance.get(`${url}`,
                 {
                     headers: {

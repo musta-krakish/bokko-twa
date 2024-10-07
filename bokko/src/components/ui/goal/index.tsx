@@ -57,7 +57,7 @@ const Goals: React.FC = () => {
             }),
         }).toString();
 
-        const data = await ApiService.getTasks(goal_id, initDataStr);
+        const data = await ApiService.getTasks(initDataStr, goal_id);
         setTasks(data);
         setSelectedGoal(goals.find((goal) => goal._id === goal_id) || null);
     };
