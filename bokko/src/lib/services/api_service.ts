@@ -97,8 +97,7 @@ export const ApiService = {
     async createTask(goal_id: string, task: Task, auth: string) {
         try {
             return await instance.post(`/task/?goal_id=${goal_id}`,
-                {
-                    task,
+                task, {
                     headers: {
                         Authorization: `twa ${auth}`
                     }
