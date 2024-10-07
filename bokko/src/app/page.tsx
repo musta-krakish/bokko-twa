@@ -29,6 +29,8 @@ export default function Home() {
             })
         }).toString();
 
+        console.log("initDataStr:", initDataStr);
+
         const fetchMe = async () => {
             try {
                 const user = await ApiService.me(initDataStr);
