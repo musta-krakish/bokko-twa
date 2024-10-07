@@ -1,4 +1,4 @@
-"use clinet";
+"use client"
 
 import RegisterForm from "@/components/register-form";
 import { ApiService } from "@/lib/services/api_service";
