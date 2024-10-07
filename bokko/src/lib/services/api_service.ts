@@ -115,7 +115,7 @@ export const ApiService = {
             if (date)
                 url += `?date=${date}`
             if (goal_id)
-                url = `?goal_id=${goal_id}`
+                url += `?goal_id=${goal_id}`
             return await instance.get(`${url}`,
                 {
                     headers: {
