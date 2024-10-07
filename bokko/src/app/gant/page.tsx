@@ -6,11 +6,10 @@ import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
 import { Chart } from "react-google-charts";
 
-
-export default function Gant(){
+export default function Gantt() {
     const initData = useInitData(true);
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [chartData, setChartData] = useState<any[]>([]);
+    const [chartData, setChartData] = useState<Array<any>>([]);
 
     useEffect(() => {
         if (!initData) return;
@@ -44,16 +43,16 @@ export default function Gant(){
 
     useEffect(() => {
         if (tasks.length > 0) {
-            const formattedData = [
+            const formattedData: Array<any> = [
                 [
-                    "Task ID",
-                    "Task Name",
-                    "Resource",
-                    "Start Date",
-                    "End Date",
-                    "Duration",
-                    "Percent Complete",
-                    "Dependencies",
+                    { type: "string", id: "Task ID" },
+                    { type: "string", id: "Task Name" },
+                    { type: "string", id: "Resource" },
+                    { type: "date", id: "Start Date" },
+                    { type: "date", id: "End Date" },
+                    { type: "number", id: "Duration" },
+                    { type: "number", id: "Percent Complete" },
+                    { type: "string", id: "Dependencies" },
                 ],
             ];
 
@@ -65,11 +64,11 @@ export default function Gant(){
                     task._id || "",
                     task.title,
                     task.goal_id || "",
-                    startDate.toString(),
-                    endDate.toDateString(),
-                    "fd",
-                    task.complite ? "100" : "0",
-                    "te"
+                    startDate,
+                    endDate,
+                    null, // Duration can be calculated or left null for auto-calculation
+                    task.complite ? 100 : 0,
+                    null, // Dependencies can be added if needed
                 ]);
             });
 
