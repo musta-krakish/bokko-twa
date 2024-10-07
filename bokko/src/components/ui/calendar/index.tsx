@@ -89,7 +89,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
     }
 
     return (
-        <div className="p-4 text-black bg-gray-100 max-w-md mx-auto relative">
+        <div className="p-4 text-black bg-gray-100 max-h-max max-w-md mx-auto relative">
             <h2 className="text-lg font-semibold mb-4">Мой календарь</h2>
             <h2 onClick={handleGoBack} className="text-lg font-semibold mb-4">&lt;</h2>
             <div className="flex space-x-4 overflow-x-auto pb-4">
