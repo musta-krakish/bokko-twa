@@ -63,7 +63,7 @@ const Goals: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col items-center p-4">
+        <div className="flex flex-col text-black items-center p-4">
             <div className="mb-4">
                 <button
                     onClick={() => window.location.href = '/calendar'}

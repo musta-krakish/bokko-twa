@@ -57,7 +57,7 @@ const GoalForm: React.FC = () => {
             </button>
 
             {isOpen && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div className="fixed inset-0 flex text-black items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                         <h2 className="text-lg font-semibold mb-4">Создать Цель</h2>
                         <form onSubmit={handleCreate} className="space-y-4">

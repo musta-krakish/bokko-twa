@@ -40,7 +40,7 @@ export default function Home() {
     }, [initData]);
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-start bg-gray-100 py-6 space-y-6">
+        <div className="min-h-screen flex flex-col text-black items-center justify-start bg-gray-100 py-6 space-y-6">
             {!user ? (
                 <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                     <RegisterForm />
