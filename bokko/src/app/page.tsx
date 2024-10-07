@@ -16,6 +16,8 @@ export default function Home() {
 
         const fetchMe = async () => {
             try {
+                console.log(initData)
+
                 const user = await ApiService.me(initData.toString());
                 setUser(user);
             } catch (err) {
