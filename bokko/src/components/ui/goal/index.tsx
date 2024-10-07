@@ -69,7 +69,6 @@ const Goals: React.FC = () => {
                     onClick={() => window.location.href = '/calendar'}
                     className="flex items-center text-white bg-blue-500 p-2 rounded-md shadow hover:bg-blue-600 transition">
                     <FaCalendarAlt className="mr-2" />
-                    Календарь
                 </button>
             </div>
             {goals.length > 0 ? (

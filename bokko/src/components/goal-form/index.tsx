@@ -5,14 +5,18 @@ import { Goal } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useState } from "react";
 
-const GoalForm: React.FC = () => {
+interface GoalFormProps {
+    open: boolean
+}
+
+const GoalForm: React.FC<GoalFormProps> = ({ open }) => {
     const initData = useInitData(true);
     const [goal, setGoal] = useState<Goal>({
         title: '',
         description: '',
         deadline: new Date(),
     });
-    const [isOpen, setIsOpen] = useState(false); // Состояние для управления попапом
+    const [isOpen, setIsOpen] = useState(open); // Состояние для управления попапом
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -49,13 +53,6 @@ const GoalForm: React.FC = () => {
 
     return (
         <div>
-            <button
-                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition"
-                onClick={() => setIsOpen(true)}
-            >
-                Добавить Цель
-            </button>
-
             {isOpen && (
                 <div className="fixed inset-0 flex text-black items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
