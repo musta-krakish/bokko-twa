@@ -3,6 +3,7 @@
 import RegisterForm from "@/components/register-form";
 import { ApiService } from "@/lib/services/api_service";
 import { User } from "@/lib/types";
+import createInitDataStr from "@/lib/utils";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
 
@@ -16,9 +17,7 @@ export default function Home() {
 
         const fetchMe = async () => {
             try {
-                console.log(initData)
-
-                const user = await ApiService.me(initData.toString());
+                const user = await ApiService.me(createInitDataStr(initData));
                 setUser(user);
             } catch (err) {
                 setError("Не удалось загрузить данные пользователя.");

@@ -2,6 +2,7 @@
 
 import { ApiService } from "@/lib/services/api_service";
 import { User } from "@/lib/types";
+import createInitDataStr from "@/lib/utils";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
 
@@ -30,7 +31,7 @@ const RegisterForm: React.FC = () => {
             tg_id: initData.user?.id,
         };
 
-        await ApiService.reg(user, initData.toString());
+        await ApiService.reg(user, createInitDataStr(initData));
     };
 
     return (
