@@ -32,13 +32,9 @@ export default function Home() {
         console.log("initDataStr:", initDataStr);
 
         const fetchMe = async () => {
-            try {
-                const user = await ApiService.me(initDataStr);
-                setUser(user);
-            } catch (err) {
-                setError("Не удалось загрузить данные пользователя.");
-                console.error(err);
-            }
+            const user = await ApiService.me(initDataStr);
+            setUser(user);
+
         };
 
         fetchMe();
