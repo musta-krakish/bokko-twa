@@ -5,7 +5,7 @@ import type { Task } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
 import { Gantt, Task as GanttTask, ViewMode } from "gantt-task-react";
-import "gantt-task-react/dist/index.css"; 
+
 
 export default function GanttComponent() {
     const initData = useInitData(true);
