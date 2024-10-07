@@ -4,7 +4,7 @@ import { ApiService } from "@/lib/services/api_service";
 import type { Task } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
-import dayjs from "dayjs"; 
+import dayjs from "dayjs";
 
 interface CalendarProps {
     curDate: Date;
@@ -51,11 +51,32 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
         fetchData();
     }, [initData, date]);
 
+    const handleConfirmTask = async (task_id: string) => {
+        if (!initData) return;
+
+        const initDataStr = new URLSearchParams({
+            query_id: initData.queryId as string,
+            auth_date: (initData.authDate.getTime() / 1000).toString(),
+            hash: initData.hash,
+            user: JSON.stringify({
+                id: initData.user?.id,
+                first_name: initData.user?.firstName,
+                last_name: initData.user?.lastName,
+                username: initData.user?.username,
+                language_code: initData.user?.languageCode,
+                is_premium: initData.user?.isPremium,
+                allows_write_to_pm: initData.user?.allowsWriteToPm,
+            }),
+        }).toString();
+
+        await ApiService.confurmTask(task_id, initDataStr);
+        setTasks((prevTasks) => prevTasks.filter(task => task._id !== task_id));
+    }
+
     return (
-        <div className="p-4 text-black max-w-md mx-auto">
+        <div className="p-4 text-black bg-gray-100 max-w-md mx-auto relative">
             <h2 className="text-lg font-semibold mb-4">Мой календарь</h2>
 
-            {/* Прокручиваемая панель дат */}
             <div className="flex space-x-4 overflow-x-auto pb-4">
                 {days.map((day, index) => (
                     <div
@@ -71,7 +92,6 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
                 ))}
             </div>
 
-            {/* Список задач на выбранную дату */}
             <div className="mt-4">
                 <h3 className="text-md font-bold mb-2">Задачи на {dayjs(date).format('D MMMM YYYY')}:</h3>
                 {tasks.length === 0 ? (
@@ -81,20 +101,26 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
                 ) : (
                     <ul className="space-y-2">
                         {tasks.map((task) => (
-                            <li key={task._id} className="bg-gray-100 p-2 rounded-md shadow-sm">
-                                <p className="font-semibold">{task.title}</p>
-                                <p className="text-gray-600">{task.description}</p>
-                                <p className="text-xs text-gray-500">Срок: {dayjs(task.deadline).format('D MMM YYYY')}</p>
+                            <li key={task._id} className="bg-gray-100 p-2 rounded-md shadow-sm flex items-center justify-between">
+                                <div>
+                                    <p className="font-semibold">{task.title}</p>
+                                    <p className="text-gray-600">{task.description}</p>
+                                    <p className="text-xs text-gray-500">Срок: {dayjs(task.deadline).format('D MMM YYYY')}</p>
+                                </div>
+                                <input
+                                    type="checkbox"
+                                    className="ml-4"
+                                    onChange={() => handleConfirmTask(task?._id || "")}
+                                />
                             </li>
                         ))}
                     </ul>
                 )}
             </div>
 
-            {/* Кнопки управления */}
-            <div className="mt-6 flex justify-between">
-                <button className="p-2 bg-gray-200 rounded-md text-sm">Диаграмма Ганта</button>
-                <button className="p-2 bg-gray-200 rounded-md text-sm">+ Добавить задачу</button>
+            <div className="fixed bottom-4 right-4 space-y-2">
+                <button className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">Диаграмма Ганта</button>
+                <button className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">+ Добавить задачу</button>
             </div>
         </div>
     );

@@ -160,5 +160,20 @@ export const ApiService = {
             throw err
         }
     },
+    async askGoal(goal_id: string, auth: string) {
+        try {
+            return await instance.post(`/ask/decomposing/?goal_id=${goal_id}`, {},
+                {
+                    headers : {
+                        Authorization: `twa ${auth}`
+                    }
+                }
+            ).then((res) => {
+                return res.data
+            })
+        } catch (err) {
+            throw err;
+        }
+    }
 }
 
