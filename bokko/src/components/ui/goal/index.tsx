@@ -67,7 +67,7 @@ const Goals: React.FC = () => {
             <div className="mb-4">
                 <button
                     onClick={() => window.location.href = '/calendar'}
-                    className="flex items-center text-white bg-blue-500 rounded-xl shadow hover:bg-blue-600 transition">
+                    className="flex items-center text-white p-5 bg-blue-500 rounded-xl shadow hover:bg-blue-600 transition">
                     <FaCalendarAlt className="mr-2" />
                 </button>
             </div>

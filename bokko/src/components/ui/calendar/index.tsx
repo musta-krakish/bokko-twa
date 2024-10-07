@@ -46,7 +46,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
         }).toString();
 
         const fetchData = async () => {
-            const isoDate = dayjs(date).toISOString(); // Преобразуем дату в формат ISO 8601
+            const isoDate = dayjs(date).toISOString(); 
             const data = await ApiService.getTasks(initDataStr, null, isoDate);
             setTasks(data);
         };
@@ -84,10 +84,14 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
         router.push("/gant");
     };
 
+    const handleGoBack = () => {
+        router.back();
+    }
+
     return (
         <div className="p-4 text-black bg-gray-100 max-w-md mx-auto relative">
             <h2 className="text-lg font-semibold mb-4">Мой календарь</h2>
-
+            <h2 onClick={handleGoBack} className="text-lg font-semibold mb-4">&lt;</h2>
             <div className="flex space-x-4 overflow-x-auto pb-4">
                 {days.map((day, index) => (
                     <div
@@ -119,7 +123,6 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
                                 <div>
                                     <p className="font-semibold">{task.title}</p>
                                     <p className="text-gray-600">{task.description}</p>
-                                    <p className="text-xs text-gray-500">Срок: {dayjs(task.deadline).format("D MMM YYYY")}</p>
                                 </div>
                                 <input
                                     type="checkbox"
@@ -134,10 +137,10 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
             </div>
 
             <div className="fixed bottom-4 right-4 space-y-2">
-                <button onClick={handleGantClick} className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">
+                <button onClick={handleGantClick} className="p-2 bg-gray-400 rounded-md text-sm shadow-md w-full">
                     Диаграмма Ганта
                 </button>
-                <button onClick={handleTaskClick} className="p-2 bg-gray-200 rounded-md text-sm shadow-md w-full">
+                <button onClick={handleTaskClick} className="p-2 bg-gray-600 rounded-md text-sm shadow-md w-full">
                     + Добавить задачу
                 </button>
             </div>

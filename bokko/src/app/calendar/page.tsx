@@ -6,8 +6,10 @@ export default function Calendar() {
     const curDate = new Date();
 
     return (
-        <CalendarComponent
-            curDate={curDate}
-        />
+        <div className="bg-gray-100">
+            <CalendarComponent
+                curDate={curDate}
+            />
+        </div>
     )
 }
