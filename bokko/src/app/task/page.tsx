@@ -7,10 +7,12 @@ import { useSearchParams } from "next/navigation";
 import React from "react";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 function TaskContent() {
     const initData = useInitData(true);
     const params = useSearchParams();
+    const router = useRouter();
     const [task, setTask] = useState<Task>({
         title: "",
         description: "",
@@ -73,10 +75,11 @@ function TaskContent() {
 
         await ApiService.createTask(goalId, task, initDataStr);
         setTask({ title: "", description: "", deadline: new Date(), complite: false });
+        router.back();
     };
 
     return (
-        <div className="p-4 max-w-md mx-auto bg-gray-100 rounded-md shadow-md">
+        <div className="p-4 max-w-md mx-auto bg-gray-100 text-black rounded-md shadow-md">
             {!goalId && goals ? (
                 <div>
                     <label htmlFor="goalSelect" className="block text-sm font-medium text-gray-700">

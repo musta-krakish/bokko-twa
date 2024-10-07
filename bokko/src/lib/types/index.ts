@@ -25,4 +25,6 @@ export interface Task {
     complite: boolean;
     deadline: Date;
     goal_id?: string;
+    end_date?: Date;
+    create_date?: Date;
 }
