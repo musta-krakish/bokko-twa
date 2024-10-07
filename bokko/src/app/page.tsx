@@ -1,6 +1,7 @@
 "use client"
 
 import RegisterForm from "@/components/register-form";
+import Goals from "@/components/ui/goal";
 import { ApiService } from "@/lib/services/api_service";
 import { User } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
@@ -9,7 +10,6 @@ import { useEffect, useState } from "react";
 export default function Home() {
     const initData = useInitData(true);
     const [user, setUser] = useState<User | null>(null); 
-    const [error, setError] = useState<string | null>(null); 
 
     useEffect(() => {
         if (!initData) return;
@@ -34,8 +34,7 @@ export default function Home() {
         const fetchMe = async () => {
             const user = await ApiService.me(initDataStr);
             setUser(user);
-
-        };
+        }
 
         fetchMe();
     }, [initData]);
@@ -44,11 +43,7 @@ export default function Home() {
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             {!user ? (
                 <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-                    {error ? (
-                        <div className="text-red-500 mb-4">{error}</div>
-                    ) : (
-                        <RegisterForm />
-                    )}
+                    <RegisterForm />
                 </div>
             ) : (
                 <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
@@ -56,6 +51,7 @@ export default function Home() {
                     <p className="text-gray-700">Должность: {user.post}</p>
                 </div>
             )}
+            <Goals/>
         </div>
     );
 }
