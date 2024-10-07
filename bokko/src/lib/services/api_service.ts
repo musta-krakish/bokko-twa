@@ -112,7 +112,12 @@ export const ApiService = {
     },
     async getTasks(goal_id: string, auth: string, date?:Date) {
         try {
-            return await instance.get(`/task/?goal_id=${goal_id}&date=${date}`,
+            let url
+            if (date)
+                url = `/task/?goal_id=${goal_id}&date=${date}`
+            else 
+                url = `/task/?goal_id=${goal_id}`
+            return await instance.get(`${url}`,
                 {
                     headers: {
                         Authorization: `twa ${auth}`
