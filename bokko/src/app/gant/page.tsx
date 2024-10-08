@@ -83,13 +83,21 @@ export default function GanttComponent() {
         const renderCalendarHeader = () => {
             const days = [];
             for (let day = 1; day <= daysInMonth; day++) {
+                const currentDay = new Date(currentYear, currentMonth, day);
                 days.push(
-                    <div key={day} className="inline-block w-8 text-center">
-                        {day}
+                    <div
+                        key={day}
+                        className={`p-2 cursor-pointer text-center rounded-md ${
+                            dayjs(currentDay).isSame(currentDate, "day") ? "bg-gray-300" : "bg-gray-100"
+                        }`}
+                        onClick={() => setCurrentDate(currentDay)}
+                    >
+                        <div>{day}</div>
+                        <div>{dayjs(currentDay).format("dd").toUpperCase()}</div>
                     </div>
                 );
             }
-            return <div className="flex justify-between mb-2">{days}</div>;
+            return <div className="flex space-x-4 overflow-x-auto pb-4">{days}</div>;
         };
 
         return (
