@@ -12,6 +12,7 @@ export default function Home() {
     const initData = useInitData(true);
     const router = useRouter();
     const [user, setUser] = useState<User | null>(null); 
+    const [loading, setLoading] = useState<boolean>(true); 
 
     useEffect(() => {
         if (!initData) return;
@@ -32,20 +33,28 @@ export default function Home() {
         }).toString();
 
         const fetchMe = async () => {
-            const user = await ApiService.me(initDataStr);
-            setUser(user);
-        }
+            try {
+                const user = await ApiService.me(initDataStr);
+                setUser(user);
+            } catch (error) {
+                console.error("Error fetching user:", error);
+            } finally {
+                setLoading(false); 
+            }
+        };
 
         fetchMe();
     }, [initData]);
 
     const handleGoalClick = () => {
         router.push("/goal");
-    }
+    };
 
     return (
         <div className="min-h-screen flex flex-col text-black items-center justify-start bg-gray-100 py-6 space-y-6">
-            {!user ? (
+            {loading ? ( 
+                <div className="text-center text-gray-700">Загрузка данных...</div>
+            ) : !user ? (
                 <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                     <RegisterForm />
                 </div>
@@ -55,9 +64,17 @@ export default function Home() {
                     <p className="text-gray-700">Должность: {user.post}</p>
                 </div>
             )}
+            
             <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                 <Goals />
-                <button onClick={handleGoalClick} className="bg-gray-500 rounded-3xl text-black">+ Добавить цель</button>
+                <div className="flex justify-center mt-4">
+                    <button 
+                        onClick={handleGoalClick} 
+                        className="bg-gray-500 text-white text-lg py-3 px-6 rounded-full hover:bg-gray-600 transition duration-300"
+                    >
+                        + Добавить цель
+                    </button>
+                </div>
             </div>
         </div>
     );
