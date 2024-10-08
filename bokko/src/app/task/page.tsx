@@ -21,6 +21,7 @@ function TaskContent() {
     });
     const [goalId, setGoalId] = useState<string>("");
     const [goals, setGoals] = useState<Goal[]>();
+    const [createAnother, setCreateAnother] = useState<boolean>(false); // Добавлен чекбокс
 
     useEffect(() => {
         const goal = params.get("goal_id");
@@ -74,8 +75,11 @@ function TaskContent() {
         }).toString();
 
         await ApiService.createTask(goalId, task, initDataStr);
-        setTask({ title: "", description: "", deadline: new Date(), complite: false });
-        router.back();
+        if (createAnother) {
+            setTask({ title: "", description: "", deadline: new Date(), complite: false });
+        } else {
+            router.back();
+        }
     };
 
     return (
@@ -140,6 +144,19 @@ function TaskContent() {
                             }
                             required
                         />
+                    </div>
+
+                    <div className="mb-4">
+                        <label htmlFor="createAnother" className="inline-flex items-center">
+                            <input
+                                id="createAnother"
+                                type="checkbox"
+                                className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+                                checked={createAnother}
+                                onChange={() => setCreateAnother(!createAnother)}
+                            />
+                            <span className="ml-2">Создать еще одну задачу</span>
+                        </label>
                     </div>
 
                     <button
