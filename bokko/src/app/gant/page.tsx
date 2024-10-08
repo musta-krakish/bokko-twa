@@ -63,11 +63,25 @@ export default function GanttComponent() {
         }
     }, [tasks]);
 
+    const containerStyle: React.CSSProperties = {
+        overflowX: "auto",  // Use a valid CSS value for overflowX
+        whiteSpace: "nowrap", // Prevent line breaks in the content
+    };
+
+    const chartOptions = {
+        viewMode: ViewMode.Day,
+        headerHeight: 50,
+        columnWidth: 65, // Adjust width for a more compact display
+        taskListWidth: 200, // Adjust task name column width
+    };
+
     return (
         <div className="p-4 text-black bg-gray-100 max-w-md mx-auto">
             <h2 className="text-lg font-semibold mb-4">Диаграмма Ганта</h2>
             {ganttTasks.length > 0 ? (
-                <Gantt tasks={ganttTasks} viewMode={ViewMode.Day} />
+                <div style={containerStyle}>
+                    <Gantt tasks={ganttTasks} {...chartOptions} />
+                </div>
             ) : (
                 <div>Нет задач для отображения</div>
             )}
