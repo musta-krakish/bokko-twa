@@ -5,6 +5,7 @@ import type { Task } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import "dayjs/locale/ru"; // для отображения дат на русском
 
 export default function GanttComponent() {
     const initData = useInitData(true);
@@ -118,3 +119,4 @@ export default function GanttComponent() {
         </div>
     );
 }
+
