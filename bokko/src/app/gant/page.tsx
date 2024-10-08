@@ -4,11 +4,13 @@ import { ApiService } from "@/lib/services/api_service";
 import type { Task } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 
 export default function GanttComponent() {
     const initData = useInitData(true);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [currentDate, setCurrentDate] = useState<Date>(new Date()); // Текущая дата
 
     useEffect(() => {
         if (!initData) return;
@@ -44,8 +46,8 @@ export default function GanttComponent() {
 
     const renderGanttChart = () => {
         const today = new Date();
-        const currentMonth = today.getMonth(); // текущий месяц
-        const currentYear = today.getFullYear(); // текущий год
+        const currentMonth = currentDate.getMonth(); // текущий месяц
+        const currentYear = currentDate.getFullYear(); // текущий год
 
         // Определяем количество дней в месяце
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
