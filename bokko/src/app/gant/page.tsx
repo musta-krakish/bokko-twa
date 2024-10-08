@@ -103,7 +103,9 @@ export default function GanttComponent() {
         return (
             <div className="relative">
                 {renderCalendarHeader()}
-                <div className="relative h-64 bg-gray-200">{tasksToRender}</div>
+                <div className="relative h-64 bg-gray-200">
+                    {tasksToRender}
+                </div>
             </div>
         );
     };
