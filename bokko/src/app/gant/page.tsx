@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ApiService } from "@/lib/services/api_service"; // Импортируйте ваш API сервис
+import { useInitData } from "@telegram-apps/sdk-react";
 
-// Пример данных для задач
-const tasks = [
-    { id: 1, name: "Задача 1", start: "2024-09-09", end: "2024-09-12" },
-    { id: 2, name: "Задача 2", start: "2024-09-10", end: "2024-09-15" },
-    { id: 3, name: "Задача 3", start: "2024-09-12", end: "2024-09-17" },
-    { id: 4, name: "Задача 4", start: "2024-09-13", end: "2024-09-16" },
-];
+interface Task {
+    id: string;
+    name: string;
+    start: string;
+    end: string;
+}
 
-// Функция для создания диапазона дат (например, от 9 до 17 сентября)
+// Функция для создания диапазона дат
 const generateDateRange = (startDate: string, endDate: string) => {
     const dates = [];
     let currentDate = new Date(startDate);
@@ -25,7 +26,43 @@ const generateDateRange = (startDate: string, endDate: string) => {
 };
 
 export default function GanttComponent() {
+    const initData = useInitData(true);
+    const [tasks, setTasks] = useState<Task[]>([]);
     const [dateRange, setDateRange] = useState<Date[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (!initData)
+            return
+
+        const initDataStr = new URLSearchParams({
+            query_id: initData.queryId as string,
+            auth_date: (initData.authDate.getTime() / 1000).toString(),
+            hash: initData.hash,
+            user: JSON.stringify({
+                id: initData.user?.id,
+                first_name: initData.user?.firstName,
+                last_name: initData.user?.lastName,
+                username: initData.user?.username,
+                language_code: initData.user?.languageCode,
+                is_premium: initData.user?.isPremium,
+                allows_write_to_pm: initData.user?.allowsWriteToPm,
+            }),
+        }).toString();
+
+        const fetchTasks = async () => {
+            try {
+                const fetchedTasks = await ApiService.getTasks(initDataStr); // Замените на ваш метод API
+                setTasks(fetchedTasks);
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTasks();
+    }, [initData]);
 
     useEffect(() => {
         const start = "2024-09-09";  // Начало диапазона
@@ -43,20 +80,27 @@ export default function GanttComponent() {
         return diffDays + 1; // Учитываем оба дня
     };
 
-    // Вычисляем позицию задачи (на каком дне она начинается)
+    // Вычисляем позицию задачи
     const calculateTaskPosition = (taskStart: string) => {
         const startDate = new Date(taskStart);
         const firstDate = dateRange[0];
+
+        // Проверка на наличие первой даты
+        if (!firstDate) return 0;
+
         const diffTime = startDate.getTime() - firstDate.getTime();
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays;
     };
 
+    if (loading) {
+        return <div className="text-center">Загрузка задач...</div>;
+    }
+
     return (
         <div className="p-4 text-black bg-gray-100 max-w-md mx-auto">
             <h2 className="text-lg font-semibold mb-4">Диаграмма Ганта</h2>
             <div className="flex flex-col">
-                {/* Сетка с датами */}
                 <div className="flex">
                     {dateRange.map((date, index) => (
                         <div
@@ -68,8 +112,6 @@ export default function GanttComponent() {
                         </div>
                     ))}
                 </div>
-
-                {/* Отображение задач */}
                 {tasks.map((task) => (
                     <div
                         key={task.id}
