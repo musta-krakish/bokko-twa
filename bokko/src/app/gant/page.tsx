@@ -44,27 +44,32 @@ export default function GanttComponent() {
 
     const renderGanttChart = () => {
         const today = new Date();
-        const chartDays = 14; // Количество дней для отображения диаграммы
-        const startDate = new Date(today);
+        const currentMonth = today.getMonth(); // текущий месяц
+        const currentYear = today.getFullYear(); // текущий год
+
+        // Определяем количество дней в месяце
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const startDate = new Date(currentYear, currentMonth, 1); // начало месяца
+
         const tasksToRender = tasks.map((task) => {
             const start = task.create_date ? new Date(task.create_date) : today;
             const end = task.end_date ? new Date(task.end_date) : task.deadline;
 
-            // Проверка на даты
+            // Проверка на корректность дат
             if (!(start instanceof Date) || isNaN(start.getTime())) return null;
             if (!(end instanceof Date) || isNaN(end.getTime())) return null;
 
-            const offset = Math.floor((start.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-            const duration = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+            const offset = Math.floor((start.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)); // смещение относительно начала месяца
+            const duration = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)); // продолжительность задачи
 
             return (
                 <div
                     key={task._id}
                     className={`absolute bg-gray-400 text-white text-center rounded p-1`}
                     style={{
-                        left: `${(offset / chartDays) * 100}%`,
-                        width: `${(duration / chartDays) * 100}%`,
-                        top: `${tasks.indexOf(task) * 50}px`, // смещение по вертикали
+                        left: `${(offset / daysInMonth) * 100}%`, // смещение по дням месяца
+                        width: `${(duration / daysInMonth) * 100}%`, // продолжительность по дням месяца
+                        top: `${tasks.indexOf(task) * 50}px`, // вертикальное смещение для каждой задачи
                     }}
                 >
                     {task.title}
@@ -72,12 +77,30 @@ export default function GanttComponent() {
             );
         });
 
-        return <div className="relative h-64 bg-gray-200">{tasksToRender}</div>;
+        // Отображаем календарь для текущего месяца
+        const renderCalendarHeader = () => {
+            const days = [];
+            for (let day = 1; day <= daysInMonth; day++) {
+                days.push(
+                    <div key={day} className="inline-block w-8 text-center">
+                        {day}
+                    </div>
+                );
+            }
+            return <div className="flex justify-between mb-2">{days}</div>;
+        };
+
+        return (
+            <div className="relative">
+                {renderCalendarHeader()}
+                <div className="relative h-64 bg-gray-200">{tasksToRender}</div>
+            </div>
+        );
     };
 
     return (
         <div className="p-4 text-black bg-gray-100 max-w-md mx-auto">
-            <h2 className="text-lg font-semibold mb-4">Диаграмма Ганта</h2>
+            <h2 className="text-lg font-semibold mb-4">Диаграмма Ганта (Месяц)</h2>
             {loading ? (
                 <div>Загрузка данных...</div>
             ) : tasks.length > 0 ? (
