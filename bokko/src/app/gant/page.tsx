@@ -10,7 +10,7 @@ export default function GanttComponent() {
     const initData = useInitData(true);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [currentDate, setCurrentDate] = useState<Date>(new Date()); // Текущая дата
+    const [currentDate, setCurrentDate] = useState<Date>(new Date());
 
     useEffect(() => {
         if (!initData) return;
@@ -45,15 +45,16 @@ export default function GanttComponent() {
     }, [initData]);
 
     const renderGanttChart = () => {
-        const currentMonth = dayjs(currentDate).month(); // текущий месяц
-        const currentYear = dayjs(currentDate).year(); // текущий год
-        const daysInMonth = dayjs(`${currentYear}-${currentMonth + 1}-01`).daysInMonth(); // дни в месяце
-        const startDate = dayjs(`${currentYear}-${currentMonth + 1}-01`); // старт месяца
+        const currentMonth = dayjs(currentDate).month();
+        const currentYear = dayjs(currentDate).year();
+        const daysInMonth = dayjs(`${currentYear}-${currentMonth + 1}-01`).daysInMonth();
+        const startDate = dayjs(`${currentYear}-${currentMonth + 1}-01`);
 
-        const tasksToRender = tasks.map((task) => {
+        const tasksToRender = tasks.map((task, index) => {
             const start = task.create_date ? dayjs(task.create_date) : dayjs();
             const end = task.end_date ? dayjs(task.end_date) : dayjs(task.deadline);
 
+            // Проверяем, что даты валидны
             if (!start.isValid() || !end.isValid()) return null;
 
             // Рассчитываем смещение и продолжительность
@@ -66,8 +67,9 @@ export default function GanttComponent() {
                     className="absolute bg-gray-400 text-white text-center rounded p-1"
                     style={{
                         left: `${(offset / daysInMonth) * 100}%`, // смещение по дням месяца
-                        width: `${(duration / daysInMonth) * 100}%`, // продолжительность задачи по дням месяца
-                        top: `${tasks.indexOf(task) * 50}px`, // вертикальное смещение для каждой задачи
+                        width: `${(duration / daysInMonth) * 100}%`, // ширина задачи
+                        top: `${index * 50}px`, // вертикальное смещение для каждой задачи
+                        transition: "all 0.3s ease", // добавление анимации для плавности
                     }}
                 >
                     {task.title}
@@ -75,7 +77,6 @@ export default function GanttComponent() {
             );
         });
 
-        // Отображаем календарь для текущего месяца
         const renderCalendarHeader = () => {
             const days = [];
             for (let day = 1; day <= daysInMonth; day++) {
