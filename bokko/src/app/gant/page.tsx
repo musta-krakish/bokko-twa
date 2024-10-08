@@ -45,32 +45,28 @@ export default function GanttComponent() {
     }, [initData]);
 
     const renderGanttChart = () => {
-        const today = new Date();
-        const currentMonth = currentDate.getMonth(); // текущий месяц
-        const currentYear = currentDate.getFullYear(); // текущий год
-
-        // Определяем количество дней в месяце
-        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-        const startDate = new Date(currentYear, currentMonth, 1); // начало месяца
+        const currentMonth = dayjs(currentDate).month(); // текущий месяц
+        const currentYear = dayjs(currentDate).year(); // текущий год
+        const daysInMonth = dayjs(`${currentYear}-${currentMonth + 1}-01`).daysInMonth(); // дни в месяце
+        const startDate = dayjs(`${currentYear}-${currentMonth + 1}-01`); // старт месяца
 
         const tasksToRender = tasks.map((task) => {
-            const start = task.create_date ? new Date(task.create_date) : today;
-            const end = task.end_date ? new Date(task.end_date) : task.deadline;
+            const start = task.create_date ? dayjs(task.create_date) : dayjs();
+            const end = task.end_date ? dayjs(task.end_date) : dayjs(task.deadline);
 
-            // Проверка на корректность дат
-            if (!(start instanceof Date) || isNaN(start.getTime())) return null;
-            if (!(end instanceof Date) || isNaN(end.getTime())) return null;
+            if (!start.isValid() || !end.isValid()) return null;
 
-            const offset = Math.floor((start.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)); // смещение относительно начала месяца
-            const duration = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)); // продолжительность задачи
+            // Рассчитываем смещение и продолжительность
+            const offset = start.diff(startDate, "day"); // смещение относительно начала месяца
+            const duration = end.diff(start, "day") + 1; // продолжительность задачи
 
             return (
                 <div
                     key={task._id}
-                    className={`absolute bg-gray-400 text-white text-center rounded p-1`}
+                    className="absolute bg-gray-400 text-white text-center rounded p-1"
                     style={{
                         left: `${(offset / daysInMonth) * 100}%`, // смещение по дням месяца
-                        width: `${(duration / daysInMonth) * 100}%`, // продолжительность по дням месяца
+                        width: `${(duration / daysInMonth) * 100}%`, // продолжительность задачи по дням месяца
                         top: `${tasks.indexOf(task) * 50}px`, // вертикальное смещение для каждой задачи
                     }}
                 >
@@ -83,17 +79,17 @@ export default function GanttComponent() {
         const renderCalendarHeader = () => {
             const days = [];
             for (let day = 1; day <= daysInMonth; day++) {
-                const currentDay = new Date(currentYear, currentMonth, day);
+                const currentDay = dayjs(`${currentYear}-${currentMonth + 1}-${day}`);
                 days.push(
                     <div
                         key={day}
                         className={`p-2 cursor-pointer text-center rounded-md ${
-                            dayjs(currentDay).isSame(currentDate, "day") ? "bg-gray-300" : "bg-gray-100"
+                            currentDay.isSame(currentDate, "day") ? "bg-gray-300" : "bg-gray-100"
                         }`}
-                        onClick={() => setCurrentDate(currentDay)}
+                        onClick={() => setCurrentDate(currentDay.toDate())}
                     >
                         <div>{day}</div>
-                        <div>{dayjs(currentDay).format("dd").toUpperCase()}</div>
+                        <div>{currentDay.format("dd").toUpperCase()}</div>
                     </div>
                 );
             }
@@ -103,9 +99,7 @@ export default function GanttComponent() {
         return (
             <div className="relative">
                 {renderCalendarHeader()}
-                <div className="relative h-64 bg-gray-200">
-                    {tasksToRender}
-                </div>
+                <div className="relative h-64 bg-gray-200">{tasksToRender}</div>
             </div>
         );
     };
