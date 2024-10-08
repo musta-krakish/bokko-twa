@@ -7,12 +7,13 @@ import { User } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";  // Importing next/Image for avatar
 
 export default function Home() {
     const initData = useInitData(true);
     const router = useRouter();
-    const [user, setUser] = useState<User | null>(null); 
-    const [loading, setLoading] = useState<boolean>(true); 
+    const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         if (!initData) return;
@@ -39,7 +40,7 @@ export default function Home() {
             } catch (error) {
                 console.error("Error fetching user:", error);
             } finally {
-                setLoading(false); 
+                setLoading(false);
             }
         };
 
@@ -52,24 +53,33 @@ export default function Home() {
 
     return (
         <div className="min-h-screen flex flex-col text-black items-center justify-start bg-gray-100 py-6 space-y-6">
-            {loading ? ( 
+            {loading ? (
                 <div className="text-center text-gray-700">Загрузка данных...</div>
             ) : !user ? (
                 <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                     <RegisterForm />
                 </div>
             ) : (
-                <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-                    <h1 className="text-xl font-bold mb-4">{user.first_name} {user.last_name}!</h1>
-                    <p className="text-gray-700">Должность: {user.post}</p>
+                <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md flex items-center">
+                    <Image
+                        src={initData?.user?.photoUrl ? initData.user.photoUrl: "/images/profile.png"}
+                        alt={`${user.first_name}'s avatar`}
+                        width={60}
+                        height={60}
+                        className="rounded-full mr-4"
+                    />
+                    <div>
+                        <h1 className="text-xl font-bold mb-2">{user.first_name} {user.last_name}</h1>
+                        <p className="text-gray-700">Должность: {user.post}</p>
+                    </div>
                 </div>
             )}
-            
+
             <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                 <Goals />
                 <div className="flex justify-center mt-4">
-                    <button 
-                        onClick={handleGoalClick} 
+                    <button
+                        onClick={handleGoalClick}
                         className="bg-gray-500 text-white text-lg py-3 px-6 rounded-full hover:bg-gray-600 transition duration-300"
                     >
                         + Добавить цель
