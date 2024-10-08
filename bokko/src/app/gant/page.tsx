@@ -1,4 +1,4 @@
-"use client"; // Ensure this component is client-side rendered
+"use client"; 
 
 import { ApiService } from "@/lib/services/api_service";
 import type { Task } from "@/lib/types";
