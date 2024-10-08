@@ -21,7 +21,7 @@ function TaskContent() {
     });
     const [goalId, setGoalId] = useState<string>("");
     const [goals, setGoals] = useState<Goal[]>();
-    const [createAnother, setCreateAnother] = useState<boolean>(false); // Добавлен чекбокс
+    const [createAnother, setCreateAnother] = useState<boolean>(false); 
 
     useEffect(() => {
         const goal = params.get("goal_id");

@@ -3,10 +3,12 @@
 import { ApiService } from "@/lib/services/api_service";
 import { Goal } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Goals() {
     const initData = useInitData(true);
+    const router = useRouter();
     const [goal, setGoal] = useState<Goal>({
         title: '',
         description: '',
@@ -46,11 +48,20 @@ export default function Goals() {
 
     };
 
+    const handleGoBack = () => {
+        router.back();
+    }
+
     return (
         <div>
             <div className="fixed inset-0 flex text-black items-center justify-center bg-opacity-50 z-50">
                 <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-                    <h2 className="text-lg font-semibold mb-4">Создать Цель</h2>
+                    <div className="flex items-center space-x-2 mb-4">
+                        <button onClick={handleGoBack} className="text-lg font-semibold">
+                            &lt;
+                        </button>
+                        <h2 className="text-lg font-semibold">Создать цель</h2>
+                    </div>
                     <form onSubmit={handleCreate} className="space-y-4">
                         <div>
                             <label className="block mb-1" htmlFor="title">Название:</label>

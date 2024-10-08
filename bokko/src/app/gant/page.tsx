@@ -6,9 +6,11 @@ import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/ru";
+import { useRouter } from "next/navigation";
 
 export default function GanttComponent() {
     const initData = useInitData(true);
+    const router = useRouter();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -52,6 +54,10 @@ export default function GanttComponent() {
 
         fetchData();
     }, [initData, goalId]);
+
+    const handleGoBack = () => {
+        router.back()
+    }
 
     const renderGanttChart = () => {
         const currentMonth = dayjs(currentDate).month();
@@ -113,7 +119,12 @@ export default function GanttComponent() {
 
     return (
         <div className="p-4 text-black bg-gray-100 max-w-md mx-auto">
-            <h2 className="text-lg font-semibold mb-4">Диаграмма Ганта</h2>
+            <div className="flex items-center space-x-2 mb-4">
+                <button onClick={handleGoBack} className="text-lg font-semibold">
+                    &lt;
+                </button>
+                <h2 className="text-lg font-semibold">Мой календарь</h2>
+            </div>
             <div>
                 <label htmlFor="goalSelect" className="block text-sm font-medium text-gray-700">
                     Выберите цель:

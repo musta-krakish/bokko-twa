@@ -91,8 +91,13 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
 
     return (
         <div className="p-4 text-black bg-gray-100 max-h-max max-w-md mx-auto relative">
-            <h2 className="text-lg font-semibold mb-4">Мой календарь</h2>
-            <h2 onClick={handleGoBack} className="text-lg font-semibold mb-4">&lt;</h2>
+            <div className="flex items-center space-x-2 mb-4">
+                <button onClick={handleGoBack} className="text-lg font-semibold">
+                    &lt;
+                </button>
+                <h2 className="text-lg font-semibold">Мой календарь</h2>
+            </div>
+            
             <div className="flex space-x-4 overflow-x-auto pb-4">
                 {days.map((day, index) => (
                     <div
@@ -107,7 +112,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
                     </div>
                 ))}
             </div>
-
+    
             <div className="mt-4">
                 <h3 className="text-md font-bold mb-2">Задачи на {dayjs(date).format("D MMMM YYYY")}:</h3>
                 {tasks.length === 0 ? (
@@ -136,7 +141,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
                     </ul>
                 )}
             </div>
-
+    
             <div className="fixed bottom-4 right-4 space-y-2">
                 <button onClick={handleGantClick} className="p-2 bg-gray-400 rounded-md text-sm shadow-md w-full">
                     Диаграмма Ганта
@@ -147,6 +152,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
             </div>
         </div>
     );
+    
 };
 
 export default CalendarComponent;
