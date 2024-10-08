@@ -6,6 +6,7 @@ import { useInitData } from "@telegram-apps/sdk-react";
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
+import "dayjs/locale/ru"; 
 
 interface CalendarProps {
     curDate: Date;
