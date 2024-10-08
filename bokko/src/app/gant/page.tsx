@@ -64,15 +64,25 @@ export default function GanttComponent() {
     }, [tasks]);
 
     const containerStyle: React.CSSProperties = {
-        overflowX: "auto",  // Use a valid CSS value for overflowX
+        overflowX: "auto",  // Allow horizontal scrolling
         whiteSpace: "nowrap", // Prevent line breaks in the content
+        borderRadius: "8px",  // Add rounded corners
+        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)", // Add shadow
+        padding: "8px", // Add some padding
     };
 
     const chartOptions = {
         viewMode: ViewMode.Day,
         headerHeight: 50,
-        columnWidth: 65, // Adjust width for a more compact display
+        columnWidth: 60, // Adjust width for a more compact display
         taskListWidth: 200, // Adjust task name column width
+        barHeight: 30, // Adjust height of task bars
+        margin: {
+            left: 15,
+            right: 15,
+            top: 50,
+            bottom: 30,
+        },
     };
 
     return (
