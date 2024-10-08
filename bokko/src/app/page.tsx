@@ -7,7 +7,7 @@ import { User } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image";  // Importing next/Image for avatar
+import Image from "next/image";  
 
 export default function Home() {
     const initData = useInitData(true);
