@@ -62,15 +62,21 @@ const Goals: React.FC = () => {
         setSelectedGoal(goals.find((goal) => goal._id === goal_id) || null);
     };
 
+    const handleTaskCompletion = async (taskId: string) => {
+        const updatedTasks = tasks.map((task) => 
+            task._id === taskId ? { ...task, complite: !task.complite } : task
+        );
+        setTasks(updatedTasks);
+    };
+
     return (
-        <div className="flex flex-col text-black items-center p-4">
-            <div className="mb-4">
-                <button
-                    onClick={() => window.location.href = '/calendar'}
-                    className="flex items-center text-white p-5 bg-blue-500 rounded-xl shadow hover:bg-blue-600 transition">
-                    <FaCalendarAlt className="mr-2" />
-                </button>
-            </div>
+        <div className="relative flex flex-col text-black items-center p-4">
+            <button
+                onClick={() => window.location.href = '/calendar'}
+                className="absolute top-4 right-4 text-white bg-blue-500 p-4 rounded-full shadow hover:bg-blue-600 transition">
+                <FaCalendarAlt />
+            </button>
+
             {goals.length > 0 ? (
                 <div className="w-full">
                     <h2 className="text-lg font-semibold mb-2">Ваши цели</h2>
@@ -82,25 +88,32 @@ const Goals: React.FC = () => {
                                 onClick={() => fetchTasks(goal._id as string)}>
                                 <h3 className="text-md font-medium">{goal.title}</h3>
                                 <p className="text-sm text-gray-600">{goal.description}</p>
+
+                                {selectedGoal?._id === goal._id && (
+                                    <ul className="mt-2 pl-4 border-l border-gray-400">
+                                        {tasks.length > 0 ? (
+                                            tasks.map((task) => (
+                                                <li key={task._id} className="p-2 flex items-center border border-gray-300 rounded-md">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        checked={task.complite} 
+                                                        onChange={() => handleTaskCompletion(task?._id || "")} 
+                                                        className="mr-2"
+                                                    />
+                                                    <div>
+                                                        <h4 className="text-md font-medium">{task.title}</h4>
+                                                        <p className="text-sm text-gray-600">{task.description}</p>
+                                                    </div>
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <p className="text-sm text-gray-500">Нет задач для этой цели.</p>
+                                        )}
+                                    </ul>
+                                )}
                             </li>
                         ))}
                     </ul>
-                    {selectedGoal && (
-                        <div className="mt-4">
-                            <ul className="space-y-2">
-                                {tasks.length > 0 ? (
-                                    tasks.map((task) => (
-                                        <li key={task._id} className="p-2 border border-gray-300 rounded-md">
-                                            <h4 className="text-md font-medium">{task.title}</h4>
-                                            <p className="text-sm text-gray-600">{task.description}</p>
-                                        </li>
-                                    ))
-                                ) : (
-                                    <p className="text-sm text-gray-500">Нет задач для этой цели.</p>
-                                )}
-                            </ul>
-                        </div>
-                    )}
                 </div>
             ) : (
                 <Link href={"/goal"}>
