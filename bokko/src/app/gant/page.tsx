@@ -123,7 +123,7 @@ export default function GanttComponent() {
                 <button onClick={handleGoBack} className="text-lg font-semibold">
                     &lt;
                 </button>
-                <h2 className="text-lg font-semibold">Диаграмма гантаь</h2>
+                <h2 className="text-lg font-semibold">Диаграмма ганта</h2>
             </div>
             <div>
                 <label htmlFor="goalSelect" className="block text-sm font-medium text-gray-700">
