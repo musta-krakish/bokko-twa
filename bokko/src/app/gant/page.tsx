@@ -78,16 +78,19 @@ export default function GanttComponent() {
                     </option>
                 ))}
             </select>
-            {loading ? (
-                <div>Загрузка данных...</div>
-            ) : (
-                <Gantt
-                    tasks={tasks}
-                    viewMode={ViewMode.Day}
-                    columnWidth={50}
-                    listCellWidth="155px"
-                />
-            )}
-        </div>
+            {tasks.length >= 0 ? (
+                loading ? (
+                    <div> Загрузка данных...</div>
+                ) : (
+                    <Gantt
+                        tasks={tasks}
+                        viewMode={ViewMode.Day}
+                        columnWidth={50}
+                        listCellWidth="155px"
+                    />
+                )
+            ) : <></>}
+
+        </div >
     );
 }
