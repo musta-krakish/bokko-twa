@@ -42,3 +42,13 @@ body {
   font-size: 10px;
   white-space: nowrap;
 }
+
+/* Скрываем названия "Name", "From", "To" */
+.gantt-task-list-header {
+  display: none;
+}
+
+/* Скрываем список задач */
+.gantt-task-list {
+  display: none;
+}

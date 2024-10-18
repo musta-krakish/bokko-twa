@@ -91,8 +91,8 @@ export default function GanttComponent() {
                     <Gantt
                         tasks={tasks}
                         viewMode={ViewMode.Day}
-                        columnWidth={windowWidth < 768 ? 60 : 80} // Увеличение ширины колонок
-                        listCellWidth={windowWidth < 768 ? "100px" : "160px"} // Корректировка ширины списка задач
+                        columnWidth={windowWidth < 768 ? 60 : 80} // Адаптивная ширина колонок
+                        listCellWidth={""} // Скрываем список задач
                         ganttHeight={windowWidth < 768 ? 300 : 500} // Адаптивная высота
                     />
                 )
