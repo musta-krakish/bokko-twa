@@ -25,3 +25,16 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Отключаем перенос текста и добавляем многоточие для длинных названий задач */
+.gantt-task-react .task-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Добавляем горизонтальный скролл для списка задач на мобильных устройствах */
+.gantt-task-react {
+  overflow-x: auto;
+}
+
