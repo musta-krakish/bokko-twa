@@ -13,6 +13,18 @@ export default function GanttComponent() {
     const [goalId, setGoalId] = useState<string>("");
     const [goals, setGoals] = useState<Goal[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [windowWidth, setWindowWidth] = useState<number>(0);
+
+    useEffect(() => {
+        // Обновляем ширину экрана при изменении размеров окна
+        const handleResize = () => setWindowWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -78,19 +90,24 @@ export default function GanttComponent() {
                     </option>
                 ))}
             </select>
+
             {tasks.length >= 0 ? (
                 loading ? (
-                    <div> Загрузка данных...</div>
+                    <div>Загрузка данных...</div>
                 ) : (
-                    <Gantt
-                        tasks={tasks}
-                        viewMode={ViewMode.Day}
-                        columnWidth={50}
-                        listCellWidth="155px"
-                    />
+                    <div style={{ overflowX: "auto" }}>
+                        <Gantt
+                            tasks={tasks}
+                            viewMode={ViewMode.Day}
+                            columnWidth={windowWidth < 768 ? 30 : 50} // Уменьшение ширины колонок на мобильных устройствах
+                            listCellWidth={windowWidth < 768 ? "120px" : "155px"} // Адаптация ширины боковой панели
+                            barFill={windowWidth < 768 ? 50 : 100} // Уменьшение высоты баров на мобильных устройствах
+                        />
+                    </div>
                 )
-            ) : <></>}
-
-        </div >
+            ) : (
+                <></>
+            )}
+        </div>
     );
 }
