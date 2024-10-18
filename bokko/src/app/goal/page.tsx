@@ -14,8 +14,7 @@ export default function Goals() {
         description: '',
         deadline: new Date(),
     });
-    const [modalContent, setModalContent] = useState<string | null>(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [goalId, setGoalId] = useState<string>();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -45,33 +44,23 @@ export default function Goals() {
             }),
         }).toString();
 
-        await ApiService.createGoal(goal, initDataStr);
+        const goal_response = await ApiService.createGoal(goal, initDataStr);
         setGoal({ title: '', description: '', deadline: new Date() });
-
+        setGoalId(goal_response._id);
     };
 
     const handleGoBack = () => {
         router.back();
     }
 
-    // Перенаправление на страницу добавления задачи
     const handleAddTasks = () => {
-        router.push(`/task?goal_id=${goal._id}`);
+        router.push(`/task?goal_id=${goalId}`);
     };
 
-    // Вызов метода Помощь ИИ
     const handleAiHelp = async () => {
-        if (!initData || !goal._id) return;
-
-        const response = await ApiService.askGoal(goal._id, initData.authDate.toString());
-        setModalContent(response);
-        setIsModalOpen(true);
+        router.push(`/ai?goal_id=${goalId}`);
     };
 
-    const closeModal = () => {
-        setIsModalOpen(false);
-        setModalContent(null);
-    };
 
     return (
         <div>
@@ -126,38 +115,26 @@ export default function Goals() {
                             Создать Цель
                         </button>
                     </form>
-                    <div className="mt-4 flex justify-between">
-                        <button
-                            onClick={handleAddTasks}
-                            className="w-full p-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
-                        >
-                            Добавить задачи
-                        </button>
-                        <button
-                            onClick={handleAiHelp}
-                            className="w-full p-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition ml-2"
-                        >
-                            Помощь ИИ
-                        </button>
-                    </div>
+                    {goalId ? (
+                        <div className="mt-4 flex justify-between">
+                            <button
+                                onClick={handleAddTasks}
+                                className="w-full p-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+                            >
+                                Добавить задачи
+                            </button>
+                            <button
+                                onClick={handleAiHelp}
+                                className="w-full p-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition ml-2"
+                            >
+                                Помощь ИИ
+                            </button>
+                        </div>
+                    ) : (<div></div>)}
                 </div>
             </div>
 
-            {/* Модальное окно для отображения результата ИИ */}
-            {isModalOpen && (
-                <div className="fixed inset-0 flex text-black items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                        <h2 className="text-lg font-semibold mb-4">Результат Помощи ИИ</h2>
-                        <p>{modalContent}</p>
-                        <button
-                            onClick={closeModal}
-                            className="mt-4 w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-                        >
-                            Закрыть
-                        </button>
-                    </div>
-                </div>
-            )}
+
         </div>
     );
 }
