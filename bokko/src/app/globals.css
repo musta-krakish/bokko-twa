@@ -38,3 +38,7 @@ body {
   overflow-x: auto;
 }
 
+.gantt-task-react .gantt-header-cell, .gantt-task-react .gantt-header-label {
+  font-size: 10px;
+  white-space: nowrap;
+}
