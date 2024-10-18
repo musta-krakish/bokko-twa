@@ -47,6 +47,7 @@ const RegisterForm: React.FC = () => {
 
 
         await ApiService.reg(user, initDataStr);
+        window.location.reload();
     };
 
     return (
