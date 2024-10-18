@@ -71,11 +71,12 @@ const Goals: React.FC = () => {
 
     return (
         <div className="relative flex flex-col text-black items-center p-4">
+            {goals.length > 0 ? (
             <button
                 onClick={() => window.location.href = '/calendar'}
                 className="absolute top-4 right-4 text-white bg-blue-500 p-4 rounded-full shadow hover:bg-blue-600 transition">
                 <FaCalendarAlt />
-            </button>
+            </button> ):(<div></div>)}
 
             {goals.length > 0 ? (
                 <div className="w-full">
