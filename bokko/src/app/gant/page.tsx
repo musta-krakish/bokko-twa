@@ -1,3 +1,5 @@
+"use client";
+
 import { Gantt, Task, ViewMode } from "gantt-task-react";
 import "gantt-task-react/dist/index.css";
 import { useEffect, useState } from "react";
