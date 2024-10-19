@@ -21,7 +21,7 @@ function TaskContent() {
     });
     const [goalId, setGoalId] = useState<string>("");
     const [goals, setGoals] = useState<Goal[]>();
-    const [createAnother, setCreateAnother] = useState<boolean>(false); 
+    const [createAnother, setCreateAnother] = useState<boolean>(false);
 
     useEffect(() => {
         const goal = params.get("goal_id");
@@ -82,6 +82,10 @@ function TaskContent() {
         }
     };
 
+    const handleGoBack = () => {
+        router.back();
+    }
+
     return (
         <div className="p-4 max-w-md mx-auto bg-gray-100 text-black rounded-md shadow-md">
             {!goalId && goals ? (
@@ -104,6 +108,12 @@ function TaskContent() {
                 </div>
             ) : (
                 <form onSubmit={handleCreate} className="mt-4">
+                    <div className="flex items-center space-x-2 mb-4">
+                        <button onClick={handleGoBack} className="text-lg font-semibold">
+                            &lt;
+                        </button>
+                        <h2 className="text-lg font-semibold">Мой календарь</h2>
+                    </div>
                     <div className="mb-4">
                         <label htmlFor="title" className="block text-sm font-medium text-gray-700">
                             Название задачи:

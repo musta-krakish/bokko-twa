@@ -6,9 +6,11 @@ import { useEffect, useState } from "react";
 import { ApiService } from "@/lib/services/api_service";
 import type { Goal } from "@/lib/types";
 import { useInitData } from "@telegram-apps/sdk-react";
+import { useRouter } from "next/navigation";
 
 export default function GanttComponent() {
     const initData = useInitData(true);
+    const router = useRouter();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [goalId, setGoalId] = useState<string>("");
     const [goals, setGoals] = useState<Goal[]>([]);
@@ -66,9 +68,18 @@ export default function GanttComponent() {
         setGoalId(event.target.value);
     };
 
+    const handleGoBack = () => {
+        router.back();
+    }
+
     return (
         <div className="p-4 text-black bg-gray-100 max-w-md mx-auto">
-            <h2 className="text-lg font-semibold mb-4">Диаграмма Ганта</h2>
+            <div className="flex items-center space-x-2 mb-4">
+                <button onClick={handleGoBack} className="text-lg font-semibold">
+                    &lt;
+                </button>
+                <h2 className="text-lg font-semibold">Диаграма Ганта</h2>
+            </div>
             <label htmlFor="goalSelect" className="block text-sm font-medium text-gray-700">
                 Выберите цель:
             </label>
@@ -84,7 +95,7 @@ export default function GanttComponent() {
                     </option>
                 ))}
             </select>
-            {tasks.length >= 0 ? (
+            {tasks.length > 0 ? (
                 loading ? (
                     <div> Загрузка данных...</div>
                 ) : (
