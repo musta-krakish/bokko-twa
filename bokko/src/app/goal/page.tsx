@@ -14,7 +14,8 @@ export default function Goals() {
         description: '',
         deadline: new Date(),
     });
-    const [goalId, setGoalId] = useState<string>();
+    const [goalId, setGoalId] = useState<string | null>(null); // Изменил тип на null для удобства проверки
+    const [goalCreated, setGoalCreated] = useState<boolean>(false); // Для отображения формы/сообщений
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -44,14 +45,19 @@ export default function Goals() {
             }),
         }).toString();
 
-        const goal_response = await ApiService.createGoal(goal, initDataStr);
-        setGoal({ title: '', description: '', deadline: new Date() });
-        setGoalId(goal_response._id);
+        try {
+            const goal_response = await ApiService.createGoal(goal, initDataStr);
+            setGoal({ title: '', description: '', deadline: new Date() });
+            setGoalId(goal_response._id);
+            setGoalCreated(true); // Устанавливаем флаг, что цель создана
+        } catch (error) {
+            console.error("Failed to create goal:", error);
+        }
     };
 
     const handleGoBack = () => {
         router.back();
-    }
+    };
 
     const handleAddTasks = () => {
         router.push(`/task?goal_id=${goalId}`);
@@ -61,7 +67,6 @@ export default function Goals() {
         router.push(`/ai?goal_id=${goalId}`);
     };
 
-
     return (
         <div>
             <div className="fixed inset-0 flex text-black items-center justify-center bg-opacity-50 z-50">
@@ -70,71 +75,75 @@ export default function Goals() {
                         <button onClick={handleGoBack} className="text-lg font-semibold">
                             &lt;
                         </button>
-                        <h2 className="text-lg font-semibold">Создать цель</h2>
+                        <h2 className="text-lg font-semibold">
+                            {goalCreated ? "Цель создана" : "Создать цель"}
+                        </h2>
                     </div>
-                    <form onSubmit={handleCreate} className="space-y-4">
-                        <div>
-                            <label className="block mb-1" htmlFor="title">Название:</label>
-                            <input
-                                type="text"
-                                id="title"
-                                name="title"
-                                value={goal.title}
-                                onChange={handleChange}
-                                required
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                            />
-                        </div>
-                        <div>
-                            <label className="block mb-1" htmlFor="description">Описание:</label>
-                            <textarea
-                                id="description"
-                                name="description"
-                                value={goal.description}
-                                onChange={handleChange}
-                                required
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                            />
-                        </div>
-                        <div>
-                            <label className="block mb-1" htmlFor="deadline">Срок выполнения:</label>
-                            <input
-                                type="date"
-                                id="deadline"
-                                name="deadline"
-                                value={goal.deadline.toISOString().substring(0, 10)}
-                                onChange={(e) => setGoal({ ...goal, deadline: new Date(e.target.value) })}
-                                required
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                            />
-                        </div>
-                        <button
-                            type="submit"
-                            className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-                        >
-                            Создать Цель
-                        </button>
-                    </form>
-                    {goalId ? (
-                        <div className="mt-4 flex justify-between">
+                    {!goalCreated ? ( // Если цель еще не создана, показываем форму
+                        <form onSubmit={handleCreate} className="space-y-4">
+                            <div>
+                                <label className="block mb-1" htmlFor="title">Название:</label>
+                                <input
+                                    type="text"
+                                    id="title"
+                                    name="title"
+                                    value={goal.title}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+                            </div>
+                            <div>
+                                <label className="block mb-1" htmlFor="description">Описание:</label>
+                                <textarea
+                                    id="description"
+                                    name="description"
+                                    value={goal.description}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+                            </div>
+                            <div>
+                                <label className="block mb-1" htmlFor="deadline">Срок выполнения:</label>
+                                <input
+                                    type="date"
+                                    id="deadline"
+                                    name="deadline"
+                                    value={goal.deadline.toISOString().substring(0, 10)}
+                                    onChange={(e) => setGoal({ ...goal, deadline: new Date(e.target.value) })}
+                                    required
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+                            </div>
                             <button
-                                onClick={handleAddTasks}
-                                className="w-full p-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+                                type="submit"
+                                className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
                             >
-                                Добавить задачи
+                                Создать Цель
                             </button>
-                            <button
-                                onClick={handleAiHelp}
-                                className="w-full p-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition ml-2"
-                            >
-                                Помощь ИИ
-                            </button>
+                        </form>
+                    ) : ( // Если цель создана, показываем навигационные кнопки
+                        <div>
+                            <p className="text-center text-green-600 mb-4">Цель успешно создана!</p>
+                            <div className="mt-4 flex flex-col space-y-2">
+                                <button
+                                    onClick={handleAddTasks}
+                                    className="w-full p-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+                                >
+                                    Добавить задачи
+                                </button>
+                                <button
+                                    onClick={handleAiHelp}
+                                    className="w-full p-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition"
+                                >
+                                    Помощь ИИ
+                                </button>
+                            </div>
                         </div>
-                    ) : (<div></div>)}
+                    )}
                 </div>
             </div>
-
-
         </div>
     );
 }

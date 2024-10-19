@@ -12,10 +12,9 @@ function AiContent() {
     const router = useRouter();
     const [text, setText] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
+    const goal_id = params.get("goal_id");
 
     useEffect(() => {
-        const goal_id = params.get("goal_id");
-
         const fetchData = async () => {
             if (!initData || !goal_id) return;
 
@@ -47,12 +46,12 @@ function AiContent() {
         fetchData();
     }, [initData, params]);
 
-    const handleGoBack = () => {
-        router.back();
+    const handleGoTask = (goal_id: string) => {
+        router.push(`/task?goal_id=${goal_id}`);
     };
 
     return (
-        <div className="container mx-auto p-6">
+        <div className="container mx-auto text-black p-6">
             {loading ? (
                 <div className="flex justify-center items-center h-screen">
                     <h2 className="text-lg font-semibold">Загрузка...</h2>
@@ -60,14 +59,14 @@ function AiContent() {
             ) : (
                 <div className="max-w-2xl mx-auto">
                     <h2 className="text-xl font-semibold mb-4">Результат Помощи ИИ</h2>
-                    <div className="bg-white p-4 shadow-md rounded-lg max-h-[75vh] overflow-auto"> {/* Прокрутка длинного текста */}
+                    <div className="bg-white p-4 shadow-md rounded-lg max-h-[75vh] overflow-auto"> 
                         <ReactMarkdown className="whitespace-pre-wrap">{text}</ReactMarkdown>
                     </div>
                     <button
-                        onClick={handleGoBack}
+                        onClick={() => handleGoTask(goal_id || "")}
                         className="mt-4 w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
                     >
-                        Назад
+                        Перейти к задачам
                     </button>
                 </div>
             )}
