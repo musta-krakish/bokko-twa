@@ -4,6 +4,7 @@ import { ApiService } from "@/lib/services/api_service";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import ReactMarkdown from 'react-markdown';  // Добавляем поддержку Markdown
 
 function AiContent() {
     const initData = useInitData(true);
@@ -60,10 +61,10 @@ function AiContent() {
                 </div>
             ) : (
                 <div className="fixed inset-0 flex text-black items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full overflow-auto">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full max-h-64 overflow-auto"> {/* Ограничение по высоте и прокрутка */}
                         <h2 className="text-lg font-semibold mb-4">Результат Помощи ИИ</h2>
-                        <div className="max-h-64 overflow-y-auto whitespace-pre-wrap">
-                            <p>{text}</p>
+                        <div className="whitespace-pre-wrap">
+                            <ReactMarkdown>{text}</ReactMarkdown> {/* Поддержка Markdown */}
                         </div>
                         <button
                             onClick={handleGoBack}
