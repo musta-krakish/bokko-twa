@@ -60,9 +60,11 @@ function AiContent() {
                 </div>
             ) : (
                 <div className="fixed inset-0 flex text-black items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full overflow-auto">
                         <h2 className="text-lg font-semibold mb-4">Результат Помощи ИИ</h2>
-                        <p>{text}</p>
+                        <div className="max-h-64 overflow-y-auto whitespace-pre-wrap">
+                            <p>{text}</p>
+                        </div>
                         <button
                             onClick={handleGoBack}
                             className="mt-4 w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
