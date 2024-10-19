@@ -50,6 +50,10 @@ function AiContent() {
         router.push(`/task?goal_id=${goal_id}`);
     };
 
+    const handleGoBack = () => {
+        router.back();
+    };
+
     return (
         <div className="container mx-auto text-black p-6">
             {loading ? (
@@ -59,15 +63,23 @@ function AiContent() {
             ) : (
                 <div className="max-w-2xl mx-auto">
                     <h2 className="text-xl font-semibold mb-4">Результат Помощи ИИ</h2>
-                    <div className="bg-white p-4 shadow-md rounded-lg max-h-[75vh] overflow-auto"> 
+                    <div className="bg-white p-4 shadow-md rounded-lg max-h-[75vh] overflow-auto">
                         <ReactMarkdown className="whitespace-pre-wrap">{text}</ReactMarkdown>
                     </div>
-                    <button
-                        onClick={() => handleGoTask(goal_id || "")}
-                        className="mt-4 w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-                    >
-                        Перейти к задачам
-                    </button>
+                    <div className="mt-4 flex flex-col space-y-2">
+                        <button
+                            onClick={handleGoTask.bind(null, goal_id || "")}
+                            className="w-full p-2 bg-gray-400 text-white rounded-md transition"
+                        >
+                            Перейти к задачам
+                        </button>
+                        <button
+                            onClick={handleGoBack}
+                            className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
+                        >
+                            Назад
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
