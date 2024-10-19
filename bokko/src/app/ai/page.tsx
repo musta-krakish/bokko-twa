@@ -4,7 +4,7 @@ import { ApiService } from "@/lib/services/api_service";
 import { useInitData } from "@telegram-apps/sdk-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import ReactMarkdown from 'react-markdown';  // Добавляем поддержку Markdown
+import ReactMarkdown from 'react-markdown';  // Поддержка Markdown
 
 function AiContent() {
     const initData = useInitData(true);
@@ -40,7 +40,7 @@ function AiContent() {
             } catch (error) {
                 console.error("Failed to fetch data", error);
             } finally {
-                setLoading(false); // Убираем индикатор загрузки после получения данных
+                setLoading(false);
             }
         };
 
@@ -52,27 +52,23 @@ function AiContent() {
     };
 
     return (
-        <div>
+        <div className="container mx-auto p-6">
             {loading ? (
-                <div className="fixed inset-0 flex text-black items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                        <h2 className="text-lg font-semibold mb-4">Загрузка...</h2>
-                    </div>
+                <div className="flex justify-center items-center h-screen">
+                    <h2 className="text-lg font-semibold">Загрузка...</h2>
                 </div>
             ) : (
-                <div className="fixed inset-0 flex text-black items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full max-h-64 overflow-auto"> {/* Ограничение по высоте и прокрутка */}
-                        <h2 className="text-lg font-semibold mb-4">Результат Помощи ИИ</h2>
-                        <div className="whitespace-pre-wrap">
-                            <ReactMarkdown>{text}</ReactMarkdown> {/* Поддержка Markdown */}
-                        </div>
-                        <button
-                            onClick={handleGoBack}
-                            className="mt-4 w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-                        >
-                            Закрыть
-                        </button>
+                <div className="max-w-2xl mx-auto">
+                    <h2 className="text-xl font-semibold mb-4">Результат Помощи ИИ</h2>
+                    <div className="bg-white p-4 shadow-md rounded-lg max-h-[75vh] overflow-auto"> {/* Прокрутка длинного текста */}
+                        <ReactMarkdown className="whitespace-pre-wrap">{text}</ReactMarkdown>
                     </div>
+                    <button
+                        onClick={handleGoBack}
+                        className="mt-4 w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                    >
+                        Назад
+                    </button>
                 </div>
             )}
         </div>
