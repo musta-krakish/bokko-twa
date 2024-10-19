@@ -1,9 +1,9 @@
 "use client"
 
 import { ApiService } from "@/lib/services/api_service";
-import { useInitData } from "@telegram-apps/sdk-react"
+import { useInitData } from "@telegram-apps/sdk-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
 
 function AiContent() {
     const initData = useInitData(true);
@@ -32,40 +32,54 @@ function AiContent() {
                     allows_write_to_pm: initData.user?.allowsWriteToPm,
                 }),
             }).toString();
-            const data = await ApiService.askGoal(goal_id, initDataStr);
-            setText(data.detail);
-            setLoading(false);
-        }
+
+            try {
+                const data = await ApiService.askGoal(goal_id, initDataStr);
+                setText(data.detail);
+            } catch (error) {
+                console.error("Failed to fetch data", error);
+            } finally {
+                setLoading(false); // Убираем индикатор загрузки после получения данных
+            }
+        };
 
         fetchData();
-    }, [initData]);
+    }, [initData, params]);
 
     const handleGoBack = () => {
         router.back();
-    }
+    };
 
     return (
         <div>
-            <div className="fixed inset-0 flex text-black items-center justify-center bg-black bg-opacity-50 z-50">
-                <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-                    <h2 className="text-lg font-semibold mb-4">Результат Помощи ИИ</h2>
-                    <p>{text}</p>
-                    <button
-                        onClick={handleGoBack}
-                        className="mt-4 w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
-                    >
-                        Закрыть
-                    </button>
+            {loading ? (
+                <div className="fixed inset-0 flex text-black items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                        <h2 className="text-lg font-semibold mb-4">Загрузка...</h2>
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div className="fixed inset-0 flex text-black items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+                        <h2 className="text-lg font-semibold mb-4">Результат Помощи ИИ</h2>
+                        <p>{text}</p>
+                        <button
+                            onClick={handleGoBack}
+                            className="mt-4 w-full p-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
+                        >
+                            Закрыть
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
-    )
+    );
 }
 
 export default function Ai() {
     return (
-        <React.Suspense fallback={<div>loading...</div>}>
+        <React.Suspense fallback={<div>Загрузка...</div>}>
             <AiContent />
         </React.Suspense>
-    )
+    );
 }
