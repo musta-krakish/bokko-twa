@@ -32,6 +32,8 @@ export default function Home() {
                 allows_write_to_pm: initData.user?.allowsWriteToPm,
             })
         }).toString();
+        
+        console.log(initData?.user?.photoUrl);
 
         const fetchMe = async () => {
             try {
