@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import RegisterForm from "@/components/register-form";
-import Goals from "@/components/ui/goal";
-import { ApiService } from "@/lib/services/api_service";
-import { User } from "@/lib/types";
-import { useInitData } from "@telegram-apps/sdk-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import Image from "next/image";  
+import RegisterForm from '@/components/register-form';
+import Goals from '@/components/ui/goal';
+import { ApiService } from '@/lib/services/api_service';
+import { User } from '@/lib/types';
+import { useInitData } from '@telegram-apps/sdk-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function Home() {
     const initData = useInitData(true);
@@ -30,9 +30,9 @@ export default function Home() {
                 language_code: initData.user?.languageCode,
                 is_premium: initData.user?.isPremium,
                 allows_write_to_pm: initData.user?.allowsWriteToPm,
-            })
+            }),
         }).toString();
-        
+
         console.log(initData?.user?.photoUrl);
 
         const fetchMe = async () => {
@@ -40,7 +40,7 @@ export default function Home() {
                 const user = await ApiService.me(initDataStr);
                 setUser(user);
             } catch (error) {
-                console.error("Error fetching user:", error);
+                console.error('Error fetching user:', error);
             } finally {
                 setLoading(false);
             }
@@ -50,44 +50,47 @@ export default function Home() {
     }, [initData]);
 
     const handleGoalClick = () => {
-        router.push("/goal");
+        router.push('/goal');
     };
+
+    if (!user) {
+        return <RegisterForm />;
+    }
 
     return (
         <div className="min-h-screen flex flex-col text-black items-center justify-start bg-gray-100 py-6 space-y-6">
             {loading ? (
                 <div className="text-center text-gray-700">Загрузка данных...</div>
-            ) : !user ? (
-                <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-                    <RegisterForm />
-                </div>
             ) : (
-                <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md flex items-center">
-                    <Image
-                        src={initData?.user?.photoUrl ? initData.user.photoUrl: "/images/profile.png"}
-                        alt={`${user.first_name}'s avatar`}
-                        width={60}
-                        height={60}
-                        className="rounded-full mr-4"
-                    />
-                    <div>
-                        <h1 className="text-xl font-bold mb-2">{user.first_name} {user.last_name}</h1>
-                        <p className="text-gray-700">Должность: {user.post}</p>
+                <>
+                    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md flex items-center">
+                        <Image
+                            src={initData?.user?.photoUrl ? initData.user.photoUrl : '/images/profile.png'}
+                            alt={`${user.first_name}'s avatar`}
+                            width={60}
+                            height={60}
+                            className="rounded-full mr-4"
+                        />
+                        <div>
+                            <h1 className="text-xl font-bold mb-2">
+                                {user.first_name} {user.last_name}
+                            </h1>
+                            <p className="text-gray-700">Должность: {user.post}</p>
+                        </div>
                     </div>
-                </div>
+                    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+                        <Goals />
+                        <div className="flex justify-center mt-4">
+                            <button
+                                onClick={handleGoalClick}
+                                className="bg-gray-500 text-white text-lg py-3 px-6 rounded-full hover:bg-gray-600 transition duration-300"
+                            >
+                                + Добавить цель
+                            </button>
+                        </div>
+                    </div>
+                </>
             )}
-
-            <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-                <Goals />
-                <div className="flex justify-center mt-4">
-                    <button
-                        onClick={handleGoalClick}
-                        className="bg-gray-500 text-white text-lg py-3 px-6 rounded-full hover:bg-gray-600 transition duration-300"
-                    >
-                        + Добавить цель
-                    </button>
-                </div>
-            </div>
         </div>
     );
 }

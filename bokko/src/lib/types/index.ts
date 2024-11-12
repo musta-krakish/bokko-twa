@@ -1,5 +1,5 @@
 export interface ApiResponse {
-    detail: string
+    detail: string;
 }
 
 export interface User {
@@ -7,6 +7,8 @@ export interface User {
     first_name: string;
     last_name: string;
     post: string;
+    gender: string;
+    age: number;
     tg_id?: number;
 }
 
