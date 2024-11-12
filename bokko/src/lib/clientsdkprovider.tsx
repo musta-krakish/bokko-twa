@@ -1,11 +1,7 @@
-"use client";
+'use client';
 
-import { SDKProvider } from "@telegram-apps/sdk-react";
+import { Root } from '@/components/dev/root';
 
 export const ClientSdkProvider = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <SDKProvider acceptCustomStyles debug>
-      {children}
-    </SDKProvider>
-  );
+    return <Root>{children}</Root>;
 };
