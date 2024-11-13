@@ -49,46 +49,33 @@ export default function Home() {
         fetchMe();
     }, [initData]);
 
-    const handleGoalClick = () => {
-        router.push('/goal');
-    };
-
     if (!user) {
         return <RegisterForm />;
     }
 
     return (
-        <div className="min-h-screen flex flex-col text-black items-center justify-start bg-gray-100 py-6 space-y-6">
+        <div className="min-h-screen flex flex-col items-center">
             {loading ? (
                 <div className="text-center text-gray-700">Загрузка данных...</div>
             ) : (
                 <>
-                    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md flex items-center">
+                    <div className="bg-accent w-full flex items-center justify-center py-10">
                         <Image
                             src={initData?.user?.photoUrl ? initData.user.photoUrl : '/images/profile.png'}
                             alt={`${user.first_name}'s avatar`}
-                            width={60}
-                            height={60}
+                            width={80}
+                            height={80}
                             className="rounded-full mr-4"
                         />
-                        <div>
+                        <div className="flex flex-col">
                             <h1 className="text-xl font-bold mb-2">
                                 {user.first_name} {user.last_name}
                             </h1>
                             <p className="text-gray-700">Должность: {user.post}</p>
                         </div>
                     </div>
-                    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-                        <Goals />
-                        <div className="flex justify-center mt-4">
-                            <button
-                                onClick={handleGoalClick}
-                                className="bg-gray-500 text-white text-lg py-3 px-6 rounded-full hover:bg-gray-600 transition duration-300"
-                            >
-                                + Добавить цель
-                            </button>
-                        </div>
-                    </div>
+
+                    <Goals />
                 </>
             )}
         </div>

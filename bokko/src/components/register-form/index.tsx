@@ -82,89 +82,79 @@ const RegisterForm: React.FC = () => {
         <div className="flex flex-col items-center justify-center h-screen p-4">
             <h1 className="text-2xl font-bold mb-4">Добро пожаловать в bokko bot</h1>
             <form onSubmit={handleRegister} className="bg-white shadow-md rounded-lg p-6 space-y-4 w-full max-w-md">
-                <div>
-                    <Label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                        Имя
-                    </Label>
-                    <Input
-                        type="text"
-                        id="firstName"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                <div className="space-y-4">
+                    <div>
+                        <Label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                            Имя
+                        </Label>
+                        <Input
+                            type="text"
+                            id="firstName"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                        />
+                    </div>
                     {formErrors.firstName && (
                         <Alert variant="destructive">
-                            <AlertTitle>Error</AlertTitle>
+                            <AlertTitle>Ошибка</AlertTitle>
                             <AlertDescription>{formErrors.firstName}</AlertDescription>
                         </Alert>
                     )}
                 </div>
-                <div>
-                    <Label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                        Фамилия
-                    </Label>
-                    <Input
-                        type="text"
-                        id="lastName"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                <div className="space-y-4">
+                    <div>
+                        <Label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                            Фамилия
+                        </Label>
+                        <Input
+                            type="text"
+                            id="lastName"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                        />
+                    </div>
                     {formErrors.lastName && (
                         <Alert variant="destructive">
-                            <AlertTitle>Error</AlertTitle>
+                            <AlertTitle>Ошибка</AlertTitle>
                             <AlertDescription>{formErrors.lastName}</AlertDescription>
                         </Alert>
                     )}
                 </div>
-                <div>
-                    <Label htmlFor="post" className="block text-sm font-medium text-gray-700">
-                        Должность
-                    </Label>
-                    <Input
-                        type="text"
-                        id="post"
-                        value={post}
-                        onChange={(e) => setPost(e.target.value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                <div className="space-y-4">
+                    <div>
+                        <Label htmlFor="post" className="block text-sm font-medium text-gray-700">
+                            Должность
+                        </Label>
+                        <Input type="text" id="post" value={post} onChange={(e) => setPost(e.target.value)} />
+                    </div>
                     {formErrors.post && (
                         <Alert variant="destructive">
-                            <AlertTitle>Error</AlertTitle>
+                            <AlertTitle>Ошибка</AlertTitle>
                             <AlertDescription>{formErrors.post}</AlertDescription>
                         </Alert>
                     )}
                 </div>
-                <div>
-                    <Label htmlFor="age" className="block text-sm font-medium text-gray-700">
-                        Возраст
-                    </Label>
-                    <Input
-                        type="number"
-                        id="age"
-                        value={age}
-                        onChange={(e) => setAge(Number(e.target.value))}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                <div className="space-y-4">
+                    <div>
+                        <Label htmlFor="age" className="block text-sm font-medium text-gray-700">
+                            Возраст
+                        </Label>
+                        <Input type="number" id="age" value={age} onChange={(e) => setAge(Number(e.target.value))} />
+                    </div>
                     {formErrors.age && (
                         <Alert variant="destructive">
-                            <AlertTitle>Error</AlertTitle>
+                            <AlertTitle>Ошибка</AlertTitle>
                             <AlertDescription>{formErrors.age}</AlertDescription>
                         </Alert>
                     )}
                 </div>
-                <div>
-                    <Label htmlFor="gender" className="block text-sm font-medium text-gray-700">
-                        Пол
-                    </Label>
-                    <Input
-                        type="text"
-                        id="gender"
-                        value={gender}
-                        onChange={(e) => setGender(e.target.value)}
-                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
+                <div className="space-y-4">
+                    <div>
+                        <Label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+                            Пол
+                        </Label>
+                        <Input type="text" id="gender" value={gender} onChange={(e) => setGender(e.target.value)} />
+                    </div>
                     {formErrors.gender && (
                         <Alert variant="destructive">
                             <AlertTitle>Ошибка</AlertTitle>
