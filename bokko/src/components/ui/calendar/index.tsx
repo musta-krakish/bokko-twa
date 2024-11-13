@@ -1,12 +1,14 @@
-"use client";
+'use client';
 
-import { ApiService } from "@/lib/services/api_service";
-import type { Task } from "@/lib/types";
-import { useInitData } from "@telegram-apps/sdk-react";
-import { useEffect, useState } from "react";
-import dayjs from "dayjs";
-import { useRouter } from "next/navigation";
-import "dayjs/locale/ru"; 
+import { ApiService } from '@/lib/services/api_service';
+import type { Task } from '@/lib/types';
+import { useInitData } from '@telegram-apps/sdk-react';
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
+import 'dayjs/locale/ru';
+import { Button } from '../button';
+import { FaChevronLeft } from 'react-icons/fa';
 
 interface CalendarProps {
     curDate: Date;
@@ -21,7 +23,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
     const generateDays = () => {
         const days = [];
         for (let i = 0; i < 30; i++) {
-            days.push(dayjs(curDate).add(i, "day").toDate());
+            days.push(dayjs(curDate).add(i, 'day').toDate());
         }
         return days;
     };
@@ -47,7 +49,7 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
         }).toString();
 
         const fetchData = async () => {
-            const isoDate = dayjs(date).toISOString(); 
+            const isoDate = dayjs(date).toISOString();
             const data = await ApiService.getTasks(initDataStr, null, isoDate);
             setTasks(data);
         };
@@ -78,81 +80,88 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
     };
 
     const handleTaskClick = () => {
-        router.push("/task");
+        router.push('/task');
     };
 
     const handleGantClick = () => {
-        router.push("/gant");
+        router.push('/gant');
     };
 
     const handleGoBack = () => {
         router.back();
-    }
+    };
 
     return (
-        <div className="p-4 text-black bg-gray-100 max-h-max max-w-md mx-auto relative">
-            <div className="flex items-center space-x-2 mb-4">
-                <button onClick={handleGoBack} className="text-lg font-semibold">
-                    &lt;
-                </button>
-                <h2 className="text-lg font-semibold">Мой календарь</h2>
+        <div className="max-h-max max-w-md mx-auto relative flex flex-col h-screen">
+            <div className="mb-4 bg-secondary">
+                <div className="max-w-[97%] flex items-center py-4 mx-auto">
+                    <Button onClick={handleGoBack} className="text-lg font-semibold" size="icon" variant="ghost">
+                        <FaChevronLeft color="white" />
+                    </Button>
+                    <h2 className="text-lg text-white font-semibold">Мой календарь</h2>
+                </div>
             </div>
-            
-            <div className="flex space-x-4 overflow-x-auto pb-4">
-                {days.map((day, index) => (
-                    <div
-                        key={index}
-                        className={`p-2 cursor-pointer text-center rounded-md ${
-                            dayjs(day).isSame(date, "day") ? "bg-gray-300" : "bg-gray-100"
-                        }`}
-                        onClick={() => setDate(day)}
-                    >
-                        <div>{dayjs(day).format("D")}</div>
-                        <div>{dayjs(day).format("dd").toUpperCase()}</div>
-                    </div>
-                ))}
-            </div>
-    
-            <div className="mt-4">
-                <h3 className="text-md font-bold mb-2">Задачи на {dayjs(date).format("D MMMM YYYY")}:</h3>
-                {tasks.length === 0 ? (
-                    <div className="text-center text-gray-500">
-                        У вас нет задач на день<br />Можно отдыхать!
-                    </div>
-                ) : (
-                    <ul className="space-y-2">
-                        {tasks.map((task) => (
-                            <li
-                                key={task._id}
-                                className="bg-gray-100 p-2 rounded-md shadow-sm flex items-center justify-between"
+
+            <div className="p-4 flex flex-col justify-between h-full">
+                <div>
+                    <div className="flex space-x-4 overflow-x-auto pb-4">
+                        {days.map((day, index) => (
+                            <div
+                                key={index}
+                                className={`p-2 cursor-pointer text-center rounded-md ${
+                                    dayjs(day).isSame(date, 'day') ? 'bg-gray-300' : 'bg-gray-100'
+                                }`}
+                                onClick={() => setDate(day)}
                             >
-                                <div>
-                                    <p className="font-semibold">{task.title}</p>
-                                    <p className="text-gray-600">{task.description}</p>
-                                </div>
-                                <input
-                                    type="checkbox"
-                                    className="ml-4"
-                                    checked={task.complite}
-                                    onChange={() => handleConfirmTask(task?._id || "")}
-                                />
-                            </li>
+                                <div>{dayjs(day).format('D')}</div>
+                                <div>{dayjs(day).format('dd').toUpperCase()}</div>
+                            </div>
                         ))}
-                    </ul>
-                )}
-            </div>
-    
-            <div className="fixed bottom-4 right-4 space-y-2">
-                <button onClick={handleGantClick} className="p-2 bg-gray-400 rounded-md text-sm shadow-md w-full">
-                    Диаграмма Ганта
-                </button>
-                <button onClick={handleTaskClick} className="p-2 bg-gray-600 rounded-md text-sm shadow-md w-full">
-                    + Добавить задачу
-                </button>
+                    </div>
+
+                    <div className="mt-4">
+                        <h3 className="text-md font-bold mb-2">Задачи на {dayjs(date).format('D MMMM YYYY')}:</h3>
+                        {tasks.length === 0 ? (
+                            <div className="text-center text-gray-500">
+                                У вас нет задач на день
+                                <br />
+                                Можно отдыхать!
+                            </div>
+                        ) : (
+                            <ul className="space-y-2">
+                                {tasks.map((task) => (
+                                    <li
+                                        key={task._id}
+                                        className="bg-gray-100 p-2 rounded-md shadow-sm flex items-center justify-between"
+                                    >
+                                        <div>
+                                            <p className="font-semibold">{task.title}</p>
+                                            <p className="text-gray-600">{task.description}</p>
+                                        </div>
+                                        <input
+                                            type="checkbox"
+                                            className="ml-4"
+                                            checked={task.complite}
+                                            onChange={() => handleConfirmTask(task?._id || '')}
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </div>
+
+                <div className="space-y-2 w-full">
+                    <Button onClick={handleTaskClick} className="w-full font-semibold text-lg">
+                        + Добавить задачу
+                    </Button>
+                    <Button onClick={handleGantClick} className="font-semibold w-full text-lg" variant="secondary">
+                        Диаграмма Ганта
+                    </Button>
+                </div>
             </div>
         </div>
     );
-    
 };
 
 export default CalendarComponent;
