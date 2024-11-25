@@ -10,6 +10,17 @@ import { useRouter } from 'next/navigation';
 import { FaChevronLeft } from 'react-icons/fa';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+    Drawer,
+    DrawerClose,
+    DrawerContent,
+    DrawerDescription,
+    DrawerFooter,
+    DrawerHeader,
+    DrawerTitle,
+    DrawerTrigger,
+} from '@/components/ui/drawer';
+import { Loader2 } from 'lucide-react';
 
 export default function GanttComponent() {
     const initData = useInitData(true);
@@ -18,13 +29,14 @@ export default function GanttComponent() {
     const [goalId, setGoalId] = useState<string>('');
     const [goals, setGoals] = useState<Goal[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [currentDate, setCurrentDate] = useState<Date>(new Date());
-    const ganttRef = useRef<HTMLDivElement>(null);
+    const [open, setOpen] = useState(false);
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
     const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 0);
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             if (!initData) return;
             const initDataStr = new URLSearchParams({
                 query_id: initData.queryId as string,
@@ -70,33 +82,14 @@ export default function GanttComponent() {
     }, [goalId, initData]);
 
     const handleGoalChange = (value: string) => {
+        setTasks([]);
+
         setGoalId(value);
     };
 
     const handleGoBack = () => {
         router.back();
     };
-
-    const handleScroll = () => {
-        if (ganttRef.current) {
-            const scrollLeft = ganttRef.current.scrollLeft;
-            const columnWidth = windowWidth < 768 ? 60 : 80; // ширина одной ячейки
-            const daysScrolled = Math.floor(scrollLeft / columnWidth);
-            const startDate = new Date(tasks[0]?.start || new Date());
-            const scrolledDate = new Date(startDate);
-            scrolledDate.setDate(startDate.getDate() + daysScrolled);
-            setCurrentDate(scrolledDate);
-        }
-    };
-
-    useEffect(() => {
-        const currentGantt = ganttRef.current;
-
-        if (currentGantt) {
-            currentGantt.addEventListener('scroll', handleScroll);
-        }
-        return () => currentGantt?.removeEventListener('scroll', handleScroll);
-    }, [tasks, windowWidth]);
 
     return (
         <div className="max-h-max max-w-md mx-auto relative flex flex-col h-screen">
@@ -109,52 +102,86 @@ export default function GanttComponent() {
                 </div>
             </div>
 
-            <div className="p-4">
-                <div className="flex items-center gap-4 mb-4">
-                    {goals && goals.length > 0 && (
-                        <Select onValueChange={handleGoalChange} defaultValue={goals[0]._id}>
-                            <SelectTrigger id="goalSelect" className="mt-1 w-fit border-none">
-                                <SelectValue placeholder="-- Выберите цель --" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {goals.map((goal) => (
-                                    <SelectItem key={goal._id} value={goal._id!}>
-                                        {goal.title}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    )}
+            {loading ? (
+                <div className="flex flex-col items-center justify-center h-full">
+                    <Loader2 className="animate-spin" />
                 </div>
+            ) : (
+                <div className="p-4">
+                    <div className="flex items-center gap-4 mb-4">
+                        {goals && goals.length > 0 && (
+                            <Select onValueChange={handleGoalChange} defaultValue={goals[0]._id}>
+                                <SelectTrigger id="goalSelect" className="mt-1 w-fit border-none">
+                                    <SelectValue placeholder="-- Выберите цель --" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {goals.map((goal) => (
+                                        <SelectItem key={goal._id} value={goal._id!}>
+                                            {goal.title}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    </div>
 
-                <div ref={ganttRef} className="overflow-x-auto flex flex-col h-full">
-                    {tasks.length > 0 ? (
-                        loading ? (
-                            <div>Загрузка данных...</div>
+                    <div className="overflow-x-auto flex flex-col h-full">
+                        {tasks.length > 0 ? (
+                            loading ? (
+                                <div>Загрузка данных...</div>
+                            ) : (
+                                <Gantt
+                                    tasks={tasks}
+                                    viewMode={ViewMode.Day}
+                                    columnWidth={windowWidth < 768 ? 60 : 80} // адаптивная ширина колонок
+                                    listCellWidth={''} // скрываем список задач
+                                    ganttHeight={windowWidth < 768 ? 300 : 500} // адаптивная высота
+                                    headerHeight={60} // адаптивная высота заголовка
+                                    rowHeight={60}
+                                    barCornerRadius={20}
+                                    barFill={80}
+                                    onClick={(task) => {
+                                        setSelectedTask(task);
+                                        setOpen(true);
+                                        console.log(task);
+                                    }}
+                                    barBackgroundColor="#bcdffc"
+                                />
+                            )
                         ) : (
-                            <Gantt
-                                tasks={tasks}
-                                viewMode={ViewMode.Day}
-                                columnWidth={windowWidth < 768 ? 60 : 80} // адаптивная ширина колонок
-                                listCellWidth={''} // скрываем список задач
-                                ganttHeight={windowWidth < 768 ? 300 : 500} // адаптивная высота
-                                headerHeight={60} // адаптивная высота заголовка
-                                rowHeight={60}
-                                barCornerRadius={20}
-                                barFill={80}
-                                onClick={(task) => {
-                                    console.log(task);
-                                }}
-                                onSelect={(task) => {
-                                    console.log(task);
-                                }}
-                            />
-                        )
-                    ) : (
-                        <></>
-                    )}
+                            <></>
+                        )}
+                        <Drawer
+                            open={open}
+                            onOpenChange={(open) => {
+                                setOpen(open);
+                                setSelectedTask(null);
+                            }}
+                        >
+                            <DrawerContent>
+                                <DrawerHeader>
+                                    <DrawerTitle>{selectedTask?.name}</DrawerTitle>
+                                    <DrawerDescription>
+                                        От {selectedTask?.start.toLocaleDateString()} до{' '}
+                                        {selectedTask?.end.toLocaleDateString()}
+                                    </DrawerDescription>
+                                </DrawerHeader>
+
+                                <div className="flex items-center gap-4 p-4">
+                                    <p className="whitespace-nowrap">Ваш прогресс:</p>
+                                    <div className="w-full h-2 bg-none rounded-full">
+                                        <div
+                                            className="h-2 bg-primary rounded-full"
+                                            style={{ width: `${selectedTask?.progress}%` }}
+                                        />
+                                    </div>
+                                    {selectedTask?.progress}%
+                                </div>
+                            </DrawerContent>
+                        </Drawer>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 }
