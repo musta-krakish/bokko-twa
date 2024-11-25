@@ -1,21 +1,27 @@
-"use client";
+'use client';
 
-import { Gantt, Task, ViewMode } from "gantt-task-react";
-import "gantt-task-react/dist/index.css";
-import { useEffect, useState } from "react";
-import { ApiService } from "@/lib/services/api_service";
-import type { Goal } from "@/lib/types";
-import { useInitData } from "@telegram-apps/sdk-react";
-import { useRouter } from "next/navigation";
+import { Gantt, Task, ViewMode } from 'gantt-task-react';
+import 'gantt-task-react/dist/index.css';
+import { useEffect, useRef, useState } from 'react';
+import { ApiService } from '@/lib/services/api_service';
+import type { Goal } from '@/lib/types';
+import { useInitData } from '@telegram-apps/sdk-react';
+import { useRouter } from 'next/navigation';
+import { FaChevronLeft } from 'react-icons/fa';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function GanttComponent() {
     const initData = useInitData(true);
     const router = useRouter();
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [goalId, setGoalId] = useState<string>("");
+    const [goalId, setGoalId] = useState<string>('');
     const [goals, setGoals] = useState<Goal[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [windowWidth, setWindowWidth] = useState<number>(typeof window !== "undefined" ? window.innerWidth : 0);
+    const [currentDate, setCurrentDate] = useState<Date>(new Date());
+    const ganttRef = useRef<HTMLDivElement>(null);
+
+    const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,11 +52,11 @@ export default function GanttComponent() {
                         start: new Date(task.create_date || task.deadline),
                         end: new Date(task.end_date || task.deadline),
                         progress: task.complite ? 100 : 0,
-                        type: "task",
+                        type: 'task',
                     }))
                 );
             } catch (error) {
-                console.error("Error fetching tasks:", error);
+                console.error('Error fetching tasks:', error);
             } finally {
                 setLoading(false);
             }
@@ -58,56 +64,97 @@ export default function GanttComponent() {
 
         fetchData();
 
-        // Обновление ширины окна
         const handleResize = () => setWindowWidth(window.innerWidth);
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
     }, [goalId, initData]);
 
-    const handleGoalChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setGoalId(event.target.value);
+    const handleGoalChange = (value: string) => {
+        setGoalId(value);
     };
 
     const handleGoBack = () => {
         router.back();
-    }
+    };
+
+    const handleScroll = () => {
+        if (ganttRef.current) {
+            const scrollLeft = ganttRef.current.scrollLeft;
+            const columnWidth = windowWidth < 768 ? 60 : 80; // ширина одной ячейки
+            const daysScrolled = Math.floor(scrollLeft / columnWidth);
+            const startDate = new Date(tasks[0]?.start || new Date());
+            const scrolledDate = new Date(startDate);
+            scrolledDate.setDate(startDate.getDate() + daysScrolled);
+            setCurrentDate(scrolledDate);
+        }
+    };
+
+    useEffect(() => {
+        const currentGantt = ganttRef.current;
+
+        if (currentGantt) {
+            currentGantt.addEventListener('scroll', handleScroll);
+        }
+        return () => currentGantt?.removeEventListener('scroll', handleScroll);
+    }, [tasks, windowWidth]);
 
     return (
-        <div className="p-4 text-black bg-gray-100 max-w-md mx-auto">
-            <div className="flex items-center space-x-2 mb-4">
-                <button onClick={handleGoBack} className="text-lg font-semibold">
-                    &lt;
-                </button>
-                <h2 className="text-lg font-semibold">Диаграма Ганта</h2>
+        <div className="max-h-max max-w-md mx-auto relative flex flex-col h-screen">
+            <div className="mb-4 bg-secondary">
+                <div className="max-w-[97%] flex items-center py-4 mx-auto">
+                    <Button onClick={handleGoBack} className="text-lg font-semibold" size="icon" variant="ghost">
+                        <FaChevronLeft color="white" />
+                    </Button>
+                    <h2 className="text-lg text-white font-semibold">Диаграмма Ганта</h2>
+                </div>
             </div>
-            <label htmlFor="goalSelect" className="block text-sm font-medium text-gray-700">
-                Выберите цель:
-            </label>
-            <select
-                id="goalSelect"
-                className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none"
-                onChange={handleGoalChange}
-            >
-                <option value="">-- Выберите цель --</option>
-                {goals.map((goal) => (
-                    <option key={goal._id} value={goal._id}>
-                        {goal.title}
-                    </option>
-                ))}
-            </select>
-            {tasks.length > 0 ? (
-                loading ? (
-                    <div> Загрузка данных...</div>
-                ) : (
-                    <Gantt
-                        tasks={tasks}
-                        viewMode={ViewMode.Day}
-                        columnWidth={windowWidth < 768 ? 60 : 80} // Адаптивная ширина колонок
-                        listCellWidth={""} // Скрываем список задач
-                        ganttHeight={windowWidth < 768 ? 300 : 500} // Адаптивная высота
-                    />
-                )
-            ) : <></>}
-        </div >
+
+            <div className="p-4">
+                <div className="flex items-center gap-4 mb-4">
+                    {goals && goals.length > 0 && (
+                        <Select onValueChange={handleGoalChange} defaultValue={goals[0]._id}>
+                            <SelectTrigger id="goalSelect" className="mt-1 w-fit border-none">
+                                <SelectValue placeholder="-- Выберите цель --" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {goals.map((goal) => (
+                                    <SelectItem key={goal._id} value={goal._id!}>
+                                        {goal.title}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    )}
+                </div>
+
+                <div ref={ganttRef} className="overflow-x-auto flex flex-col h-full">
+                    {tasks.length > 0 ? (
+                        loading ? (
+                            <div>Загрузка данных...</div>
+                        ) : (
+                            <Gantt
+                                tasks={tasks}
+                                viewMode={ViewMode.Day}
+                                columnWidth={windowWidth < 768 ? 60 : 80} // адаптивная ширина колонок
+                                listCellWidth={''} // скрываем список задач
+                                ganttHeight={windowWidth < 768 ? 300 : 500} // адаптивная высота
+                                headerHeight={60} // адаптивная высота заголовка
+                                rowHeight={60}
+                                barCornerRadius={20}
+                                barFill={80}
+                                onClick={(task) => {
+                                    console.log(task);
+                                }}
+                                onSelect={(task) => {
+                                    console.log(task);
+                                }}
+                            />
+                        )
+                    ) : (
+                        <></>
+                    )}
+                </div>
+            </div>
+        </div>
     );
 }

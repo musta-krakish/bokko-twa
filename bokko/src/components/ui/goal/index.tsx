@@ -75,6 +75,8 @@ const Goals: React.FC = () => {
         router.push('/goal');
     };
 
+    const completedTasks = tasks.filter((task) => task.complite);
+
     return (
         <div className="relative flex flex-col gap-4 text-black w-full flex-1 p-8">
             <div className="flex items-center justify-between">
@@ -86,6 +88,10 @@ const Goals: React.FC = () => {
                 ) : null}
             </div>
 
+            <Button onClick={handleGoalClick} className="text-xl font-semibold w-full h-[50px]">
+                <FaPlus size={10} /> Добавить цель
+            </Button>
+
             {goals.length > 0 ? (
                 <ul className="space-y-2">
                     {goals.map((goal) => (
@@ -94,8 +100,17 @@ const Goals: React.FC = () => {
                             className="p-4 border border-gray-300 rounded-md cursor-pointer hover:bg-gray-100 transition"
                             onClick={() => fetchTasks(goal._id as string)}
                         >
-                            <h3 className="text-md font-medium">{goal.title}</h3>
-                            <p className="text-sm text-gray-600">{goal.description}</p>
+                            <div className="flex items-center w-full justify-between">
+                                <div className="flex flex-col">
+                                    <h3 className="text-md font-medium">{goal.title}</h3>
+                                    <p className="text-sm text-gray-600">{goal.description}</p>
+                                </div>
+                                {selectedGoal?._id === goal._id && tasks.length > 0 && (
+                                    <p>
+                                        {completedTasks.length}/{tasks.length}
+                                    </p>
+                                )}
+                            </div>
 
                             {selectedGoal?._id === goal._id && (
                                 <ul className="mt-2 pl-4 border-l border-gray-400">
@@ -108,8 +123,9 @@ const Goals: React.FC = () => {
                                                 <input
                                                     type="checkbox"
                                                     checked={task.complite}
-                                                    onChange={() => handleTaskCompletion(task?._id || '')}
+                                                    // onChange={() => handleTaskCompletion(task?._id || '')}
                                                     className="mr-2"
+                                                    disabled
                                                 />
                                                 <div>
                                                     <h4 className="text-md font-medium">{task.title}</h4>
