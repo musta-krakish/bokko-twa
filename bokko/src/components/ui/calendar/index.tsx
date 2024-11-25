@@ -113,14 +113,16 @@ const CalendarComponent: React.FC<CalendarProps> = ({ curDate }) => {
                                 }`}
                                 onClick={() => setDate(day)}
                             >
-                                <div>{dayjs(day).format('D')}</div>
-                                <div>{dayjs(day).format('dd').toUpperCase()}</div>
+                                <div>{dayjs(day).locale('ru').format('D')}</div>
+                                <div>{dayjs(day).locale('ru').format('dd').toUpperCase()}</div>
                             </div>
                         ))}
                     </div>
 
                     <div className="mt-4">
-                        <h3 className="text-md font-bold mb-2">Задачи на {dayjs(date).format('D MMMM YYYY')}:</h3>
+                        <h3 className="text-md font-bold mb-2">
+                            Задачи на {dayjs(date).locale('ru').format('D MMMM YYYY')}:
+                        </h3>
                         {tasks.length === 0 ? (
                             <div className="text-center text-gray-500">
                                 У вас нет задач на день
