@@ -146,6 +146,7 @@ export default function GanttComponent() {
                                         console.log(task);
                                     }}
                                     barBackgroundColor="#bcdffc"
+                                    locale="ru"
                                 />
                             )
                         ) : (
