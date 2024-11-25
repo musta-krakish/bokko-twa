@@ -1,18 +1,21 @@
-"use client"
+'use client';
 
-import { ApiService } from "@/lib/services/api_service";
-import { useInitData } from "@telegram-apps/sdk-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import ReactMarkdown from 'react-markdown';  // Поддержка Markdown
+import { Button } from '@/components/ui/button';
+import { ApiService } from '@/lib/services/api_service';
+import { useInitData } from '@telegram-apps/sdk-react';
+import { Loader2 } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { FaChevronLeft } from 'react-icons/fa';
+import ReactMarkdown from 'react-markdown'; // Поддержка Markdown
 
 function AiContent() {
     const initData = useInitData(true);
     const params = useSearchParams();
     const router = useRouter();
-    const [text, setText] = useState<string>("");
+    const [text, setText] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
-    const goal_id = params.get("goal_id");
+    const goal_id = params.get('goal_id');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -37,7 +40,7 @@ function AiContent() {
                 const data = await ApiService.askGoal(goal_id, initDataStr);
                 setText(data.detail);
             } catch (error) {
-                console.error("Failed to fetch data", error);
+                console.error('Failed to fetch data', error);
             } finally {
                 setLoading(false);
             }
@@ -55,40 +58,49 @@ function AiContent() {
     };
 
     return (
-        <div className="container mx-auto text-black p-6">
-            {loading ? (
-                <div className="flex justify-center items-center h-screen">
-                    <h2 className="text-lg font-semibold">Загрузка...</h2>
+        <div className="max-h-max max-w-md mx-auto relative flex flex-col h-screen">
+            <div className="bg-secondary">
+                <div className="max-w-[97%] flex items-center py-4 mx-auto">
+                    <Button onClick={handleGoBack} className="text-lg font-semibold" size="icon" variant="ghost">
+                        <FaChevronLeft color="white" />
+                    </Button>
+                    <h2 className="text-lg text-white font-semibold">Помощь с ИИ</h2>
                 </div>
-            ) : (
-                <div className="max-w-2xl mx-auto">
-                    <h2 className="text-xl font-semibold mb-4">Результат Помощи ИИ</h2>
-                    <div className="bg-white p-4 shadow-md rounded-lg max-h-[75vh] overflow-auto">
-                        <ReactMarkdown className="whitespace-pre-wrap">{text}</ReactMarkdown>
+            </div>
+            <div className="p-4 w-full">
+                {loading ? (
+                    <div className="flex justify-center items-center h-screen">
+                        <Loader2 className="animate-spin" />
                     </div>
-                    <div className="mt-4 flex flex-col space-y-2">
-                        <button
-                            onClick={handleGoTask.bind(null, goal_id || "")}
-                            className="w-full p-2 bg-gray-400 text-white rounded-md transition"
-                        >
-                            Перейти к задачам
-                        </button>
-                        <button
-                            onClick={handleGoBack}
-                            className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
-                        >
-                            Назад
-                        </button>
+                ) : (
+                    <div className="max-w-2xl mx-auto">
+                        <h2 className="text-xl font-semibold mb-4">Результат Помощи ИИ</h2>
+                        <div className="bg-white p-4 shadow-md rounded-lg max-h-[75vh] overflow-auto">
+                            <ReactMarkdown className="whitespace-pre-wrap">
+                                {text && text.length > 0 ? text : 'Нет результатов'}
+                            </ReactMarkdown>
+                        </div>
+                        <div className="mt-4 flex flex-col space-y-2">
+                            <Button
+                                onClick={handleGoTask.bind(null, goal_id || '')}
+                                className="w-full text-lg font-semibold"
+                            >
+                                Перейти к задачам
+                            </Button>
+                            <Button onClick={handleGoBack} variant="secondary" className="w-full text-lg font-semibold">
+                                Назад
+                            </Button>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }
 
 export default function Ai() {
     return (
-        <React.Suspense fallback={<div>Загрузка...</div>}>
+        <React.Suspense fallback={<Loader2 className="animate-spin" />}>
             <AiContent />
         </React.Suspense>
     );
